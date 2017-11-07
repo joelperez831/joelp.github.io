@@ -5,15 +5,15 @@ date: '2017-11-06'
 slug: test-page
 categories: []
 tags: []
-images: "rick-and-morty.jpg"
+
 ---
 
 
 ##**Sentiment Analysis on Rick and Morty**:  
 ###After reading *Text Mining with R*, I was trying to think of a project I could apply what I had learned. It wasn't until I came across this blog post by Tamas Szilagyi: [A TIDY TEXT ANALYSIS OF RICK AND MORTY](http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/)  that my eyes were opened. 
-<div style="width:300px; height=200px">
+
 ![](rick-and-morty.jpg)
-</div>
+
   
 ### As a huge Rick and Morty fan, the idea of combining text analysis and my favorite show was perfect. I did my best to make this project my own. I looked online for the subtitles and began cleaning up the text. I started with looking at the overall sentiment of the show.  
 ```{r, echo=FALSE, warning=FALSE, message=FALSE,fig.width=7, fig.height=5}
@@ -24,7 +24,8 @@ library(tidyr)
 library(igraph) 
 library(ggraph) 
 library(ggplot2) 
-library(magick)
+
+
 
 a <- read.subtitles.serie(dir = "C:/Users/Joey/Desktop/randm/series/")
 df <- subDataFrame(a) 
@@ -33,9 +34,7 @@ df$Text<- gsub("[[:punct:]]","", df$Text)
 tidydf <- df %>% unnest_tokens(word, Text) %>% anti_join(stop_words %>% 
                                                             rbind(data.frame(word=c("xhmikosr","www.addic7ed.com","sync","corrections"),lexicon = "custom")))
 
-pic <- image_read("C:/Users/Joey/Desktop/randm/series/rick-and-morty/rick-and-morty.jpg")
-pic <- image_convert(pic)
-image_resize(pic, "500x300")
+
 nrcSent <- get_sentiments("nrc")
 randmSent <- tidydf %>% inner_join(nrcSent)
 ggplot(randmSent, aes(sentiment)) + geom_bar(fill = "orange", color = "black")

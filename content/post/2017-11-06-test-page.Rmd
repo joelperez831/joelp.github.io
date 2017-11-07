@@ -44,7 +44,7 @@ ggplot(randmSent, aes(sentiment)) + geom_bar(fill = "orange", color = "black")
 ```    
 
 ## **"The answer is: Don't think about it."**  
-#### &nbsp;&nbsp;&nbsp;&nbsp; Rick and Morty can come off as a very dark and nihilistic show. However, according to the sentiment analysis of the show, in its entirety, the show seems to be more netural, with an almost equal amount of negative and positive sentiments.  
+#### &nbsp;&nbsp;&nbsp;&nbsp; Rick and Morty can come off as a very dark and nihilistic show. However, according to the sentiment analysis of the show, in its entirety, the show seems to be more neutral, with an almost equal amount of negative and positive sentiments.  
 ####  &nbsp;&nbsp;&nbsp;&nbsp; Let's look at each season to see if this is the case for every season:  
 
 
@@ -77,7 +77,7 @@ ggplot(topwords2, aes(word, fill = (sentiment))) + geom_bar(show.legend = TRUE) 
 coord_flip() + facet_wrap(~season_num, scales = "free_y", nrow = 3) + labs(title
 = "By Season")
 ```  
-One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. The show is known for rejecting any notion of the existence of a higher being, higher than Rick that is.  I was suprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: "Oh my god", which is not usually used as a positive sentiment. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later. For now, let's keep the focus of seeing how each season differs.  
+One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. The show is known for rejecting any notion of the existence of a higher being, higher than Rick that is.  I was surprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: "Oh my god", which is not usually used as a positive sentiment. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later. For now, let's keep the focus of seeing how each season differs.  
 <div style="width:300px; height=200px">  ![](d68.gif)  </div>  
 
 ### Number of times each character is mentioned per season:   
@@ -89,7 +89,7 @@ facet_wrap(~season_num) + scale_fill_manual(values= alpha(c("red",
 element_text(angle=90, vjust=1))
 ```  
   
-#### It's not suprising that the most mentioned characters of Rick and Morty are Rick and Morty. However, we can see Morty was the real star of the first season. He was mentioned about twice as much as Rick and after the first season, he dropped all the way down. Justin Roiland, the voice of Rick and Morty, said in a podcast that he felt Rick saying "Morty" was a verbal crutch and wanted to try to stray away from it. As we can see by the graph, he really did follow through.  
+#### It shouldn't shock you to know that the most mentioned characters of Rick and Morty are Rick and Morty. However, we can see Morty was the real star of the first season. He was mentioned about twice as much as Rick and after the first season, he dropped all the way down. Justin Roiland, the voice of Rick and Morty, said in a podcast that he felt Rick saying "Morty" was a verbal crutch and wanted to try to stray away from it. As we can see by the graph, he really did follow through.  
 
 #### TF-IDF  
 tf-idf is the term frequency-inverse document frequency. It plays a large part in text mining. Words that appear often get a lower tf-idf and uncommon ones a higher tf-idf. So, let's plot the top 20 tf-idf words per season and exclude main character names, very common everyday words, aka stop words, and some random words from the subtitle file.    
@@ -108,8 +108,7 @@ NULL, y = "tf-idf") + coord_flip()
 
 ```  
     
-  We can see from that the top positions for each season are: meeseeks, unity and pickle, which, if you watch Rick and Morty, is not so suprising.  
-  
+  We can see from that the top positions for each season are: meeseeks, unity and pickle, which makes sense to those who watch the show.  
   
  
 ```{r,warning=FALSE, fig.width= 6, fig.height=10}
@@ -140,7 +139,7 @@ bigram_tf_idf <- gramcountUnited %>% filter((bigram != "xhmikosrwwwaddic7edcom")
 plays")  & (bigram != "suspenseful music") &  (bigram != "speaking alien language") & (bigram != "laughter")) %>% count(season_num, bigram) %>% bind_tf_idf(bigram, season_num, n)%>% arrange(desc(tf_idf))  
 ```  
 
-###From the tibble above, we can see the words following the word "god" and the words after the word "god". It looks like "my god"", "oh god" and "god damn" are the most commonly used phrases with the word god. If we assume the context of these phrases to be stricktly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let's see how that changes the overall sentiment of the show.  
+###From the tibble above, we can see the words following the word "god" and the words after the word "god". It looks like "my god"", "oh god" and "god damn" are the most commonly used phrases with the word god. If we assume the context of these phrases to be strictly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let's see how that changes the overall sentiment of the show.  
 ```{r}
 randmSent <- tidydf %>% inner_join(nrcSent)
 randmSent[which(randmSent$word =="god"),]$sentiment <-"negative"
@@ -152,7 +151,7 @@ ggplot(randmSent, aes(sentiment)) +geom_bar(fill = "orange", color = "black")
 #### Now we get a graph that Rick and Morty fans might find more accurate. I know I do.   
   
   
- Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, there's no suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text. As you can see, most bigrams lead back to Rick and Morty. 
+ Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, it makes sense that Jan Michael is on the list. Pretty good looking graph using bigrams. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text. As you can see, most bigrams lead back to Rick and Morty. 
 
 ```{r, fig.width= 6, fig.height=10 } 
 bigram_tf_idf %>% group_by(season_num) %>% top_n(5) %>% ungroup %>% ggplot(aes(bigram, tf_idf, fill = as.factor(season_num))) +geom_col(show.legend =  FALSE) + labs(x = NULL, y ="tf-idf") + facet_wrap(~season_num, ncol = 1, scales = "free") + coord_flip()

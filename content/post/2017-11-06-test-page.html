@@ -40,8 +40,8 @@ ggplot(randmSent, aes(sentiment)) + geom_bar(fill = &quot;orange&quot;, color = 
 </div>
 <div id="the-answer-is-dont-think-about-it." class="section level2">
 <h2><strong>“The answer is: Don’t think about it.”</strong></h2>
-<div id="rick-and-morty-can-come-off-as-a-very-dark-and-nihilistic-show.-however-according-to-the-sentiment-analysis-of-the-show-in-its-entirety-the-show-seems-to-be-more-netural-with-an-almost-equal-amount-of-negative-and-positive-sentiments." class="section level4">
-<h4>     Rick and Morty can come off as a very dark and nihilistic show. However, according to the sentiment analysis of the show, in its entirety, the show seems to be more netural, with an almost equal amount of negative and positive sentiments.</h4>
+<div id="rick-and-morty-can-come-off-as-a-very-dark-and-nihilistic-show.-however-according-to-the-sentiment-analysis-of-the-show-in-its-entirety-the-show-seems-to-be-more-neutral-with-an-almost-equal-amount-of-negative-and-positive-sentiments." class="section level4">
+<h4>     Rick and Morty can come off as a very dark and nihilistic show. However, according to the sentiment analysis of the show, in its entirety, the show seems to be more neutral, with an almost equal amount of negative and positive sentiments.</h4>
 </div>
 <div id="lets-look-at-each-season-to-see-if-this-is-the-case-for-every-season" class="section level4">
 <h4>     Let’s look at each season to see if this is the case for every season:</h4>
@@ -69,7 +69,7 @@ ggplot(randmSent, aes(sentiment)) + geom_bar(fill = &quot;orange&quot;, color = 
 </div>
 <div id="top-negative-and-positive-sentiments" class="section level1">
 <h1>Top negative and positive sentiments:</h1>
-<img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-4-1.png" width="672" /> One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. The show is known for rejecting any notion of the existence of a higher being, higher than Rick that is. I was suprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: “Oh my god”, which is not usually used as a positive sentiment. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later. For now, let’s keep the focus of seeing how each season differs.<br />
+<img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-4-1.png" width="672" /> One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. The show is known for rejecting any notion of the existence of a higher being, higher than Rick that is. I was surprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: “Oh my god”, which is not usually used as a positive sentiment. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later. For now, let’s keep the focus of seeing how each season differs.<br />
 
 <div style="width:300px; height=200px">
 <img src="d68.gif" />
@@ -77,8 +77,8 @@ ggplot(randmSent, aes(sentiment)) + geom_bar(fill = &quot;orange&quot;, color = 
 <div id="number-of-times-each-character-is-mentioned-per-season" class="section level3">
 <h3>Number of times each character is mentioned per season:</h3>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<div id="its-not-suprising-that-the-most-mentioned-characters-of-rick-and-morty-are-rick-and-morty.-however-we-can-see-morty-was-the-real-star-of-the-first-season.-he-was-mentioned-about-twice-as-much-as-rick-and-after-the-first-season-he-dropped-all-the-way-down.-justin-roiland-the-voice-of-rick-and-morty-said-in-a-podcast-that-he-felt-rick-saying-morty-was-a-verbal-crutch-and-wanted-to-try-to-stray-away-from-it.-as-we-can-see-by-the-graph-he-really-did-follow-through." class="section level4">
-<h4>It’s not suprising that the most mentioned characters of Rick and Morty are Rick and Morty. However, we can see Morty was the real star of the first season. He was mentioned about twice as much as Rick and after the first season, he dropped all the way down. Justin Roiland, the voice of Rick and Morty, said in a podcast that he felt Rick saying “Morty” was a verbal crutch and wanted to try to stray away from it. As we can see by the graph, he really did follow through.</h4>
+<div id="it-shouldnt-shock-you-to-know-that-the-most-mentioned-characters-of-rick-and-morty-are-rick-and-morty.-however-we-can-see-morty-was-the-real-star-of-the-first-season.-he-was-mentioned-about-twice-as-much-as-rick-and-after-the-first-season-he-dropped-all-the-way-down.-justin-roiland-the-voice-of-rick-and-morty-said-in-a-podcast-that-he-felt-rick-saying-morty-was-a-verbal-crutch-and-wanted-to-try-to-stray-away-from-it.-as-we-can-see-by-the-graph-he-really-did-follow-through." class="section level4">
+<h4>It shouldn’t shock you to know that the most mentioned characters of Rick and Morty are Rick and Morty. However, we can see Morty was the real star of the first season. He was mentioned about twice as much as Rick and after the first season, he dropped all the way down. Justin Roiland, the voice of Rick and Morty, said in a podcast that he felt Rick saying “Morty” was a verbal crutch and wanted to try to stray away from it. As we can see by the graph, he really did follow through.</h4>
 </div>
 <div id="tf-idf" class="section level4">
 <h4>TF-IDF</h4>
@@ -94,7 +94,7 @@ plotWords &lt;- episodeWords %&gt;% arrange(desc(tf_idf)) %&gt;% mutate(word =fa
 plotWords %&gt;% top_n(20) %&gt;% ggplot(aes(word, tf_idf, fill = as.factor(season_num))) + geom_col() + labs(x=
 NULL, y = &quot;tf-idf&quot;) + coord_flip() </code></pre>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-6-1.png" width="576" /></p>
-<p>We can see from that the top positions for each season are: meeseeks, unity and pickle, which, if you watch Rick and Morty, is not so suprising.</p>
+<p>We can see from that the top positions for each season are: meeseeks, unity and pickle, which makes sense to those who watch the show.</p>
 <pre><code>plotWords %&gt;% group_by(season_num) %&gt;% top_n(15) %&gt;% ungroup %&gt;%
 ggplot(aes(word, tf_idf, fill = as.factor(season_num))) + geom_col(show.legend =
 FALSE) + labs(x = NULL, y = &quot;tf-idf&quot;) + facet_wrap(~season_num, ncol = 1, scales
@@ -144,8 +144,8 @@ bigram_tf_idf &lt;- gramcountUnited %&gt;% filter((bigram != &quot;xhmikosrwwwad
 plays&quot;)  &amp; (bigram != &quot;suspenseful music&quot;) &amp;  (bigram != &quot;speaking alien language&quot;) &amp; (bigram != &quot;laughter&quot;)) %&gt;% count(season_num, bigram) %&gt;% bind_tf_idf(bigram, season_num, n)%&gt;% arrange(desc(tf_idf))  </code></pre>
 </div>
 </div>
-<div id="from-the-tibble-above-we-can-see-the-words-following-the-word-god-and-the-words-after-the-word-god.-it-looks-like-my-godoh-god-and-god-damn-are-the-most-commonly-used-phrases-with-the-word-god.-if-we-assume-the-context-of-these-phrases-to-be-stricktly-negative-which-as-an-avid-fan-i-can-say-that-they-are-definitely-used-more-in-a-negative-context-and-if-we-treat-them-as-such-lets-see-how-that-changes-the-overall-sentiment-of-the-show." class="section level3">
-<h3>From the tibble above, we can see the words following the word “god” and the words after the word “god”. It looks like “my god”“,”oh god&quot; and “god damn” are the most commonly used phrases with the word god. If we assume the context of these phrases to be stricktly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let’s see how that changes the overall sentiment of the show.</h3>
+<div id="from-the-tibble-above-we-can-see-the-words-following-the-word-god-and-the-words-after-the-word-god.-it-looks-like-my-godoh-god-and-god-damn-are-the-most-commonly-used-phrases-with-the-word-god.-if-we-assume-the-context-of-these-phrases-to-be-strictly-negative-which-as-an-avid-fan-i-can-say-that-they-are-definitely-used-more-in-a-negative-context-and-if-we-treat-them-as-such-lets-see-how-that-changes-the-overall-sentiment-of-the-show." class="section level3">
+<h3>From the tibble above, we can see the words following the word “god” and the words after the word “god”. It looks like “my god”“,”oh god&quot; and “god damn” are the most commonly used phrases with the word god. If we assume the context of these phrases to be strictly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let’s see how that changes the overall sentiment of the show.</h3>
 <pre><code>randmSent &lt;- tidydf %&gt;% inner_join(nrcSent)
 
 ## Joining, by = &quot;word&quot;
@@ -156,7 +156,7 @@ ggplot(randmSent, aes(sentiment)) +geom_bar(fill = &quot;orange&quot;, color = &
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <div id="now-we-get-a-graph-that-rick-and-morty-fans-might-find-more-accurate.-i-know-i-do." class="section level4">
 <h4>Now we get a graph that Rick and Morty fans might find more accurate. I know I do.</h4>
-<p>Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, there’s no suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text. As you can see, most bigrams lead back to Rick and Morty.</p>
+<p>Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, it makes sense that Jan Michael is on the list. Pretty good looking graph using bigrams. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text. As you can see, most bigrams lead back to Rick and Morty.</p>
 <pre><code>bigram_tf_idf %&gt;% group_by(season_num) %&gt;% top_n(5) %&gt;% ungroup %&gt;% ggplot(aes(bigram, tf_idf, fill = as.factor(season_num))) +geom_col(show.legend =  FALSE) + labs(x = NULL, y =&quot;tf-idf&quot;) + facet_wrap(~season_num, ncol = 1, scales = &quot;free&quot;) + coord_flip()
 
 ## Selecting by tf_idf</code></pre>

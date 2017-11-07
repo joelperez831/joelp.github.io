@@ -10,6 +10,7 @@ tags: []
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE)
+knitr::render_markdown(TRUE)
 library(dplyr) 
 library(tidytext) 
 library(subtools) 
@@ -160,5 +161,5 @@ ggraph(bigram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n),
   show.legend = FALSE, arrow = x, end_cap = circle(.07, 'inches')) +
   geom_node_point(color = "lightblue", size = 8) + geom_node_text(aes(label =name), vjust = 1, hjust = 1) + theme_void()
 ```  
-##**Summary:**   
+# **Summary:**   
   I had a lot of fun with this project. Being a fan of the show did help with this project in so many ways. For example, the issue with the term "god" being seen as a positive sentiment in the show when I knew it was not being used positively. Having an idea of what a graph should produce and getting something totally unexpected made me look deep into my code and find a problem I would never have known was there if I didn't know the show. If you're going to do a text analysis project, you should be passionate about both what you are analyzing and the process of analyzing. Thanks so much for taking the time to look at my project. I hope you found something interesting during your read.

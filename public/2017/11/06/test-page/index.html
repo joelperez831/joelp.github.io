@@ -82,9 +82,10 @@
 </div>
 <div id="as-a-huge-rick-and-morty-fan-the-idea-of-combining-text-analysis-and-my-favorite-show-was-perfect.-i-did-my-best-to-make-this-project-my-own.-i-looked-online-for-the-subtitles-and-began-cleaning-up-the-text.-i-started-with-looking-at-the-overall-sentiment-of-the-show.-the-sentiment-we-use-by-cross-checking-words-that-have-a-certain-tone-to-them.-by-analyzing-the-most-frequent-types-of-negative-and-positive-words-used-we-can-get-an-idea-of-how-the-tone-of-the-show-itself-might-be." class="section level3">
 <h3>As a huge Rick and Morty fan, the idea of combining text analysis and my favorite show was perfect. I did my best to make this project my own. I looked online for the subtitles and began cleaning up the text. I started with looking at the overall sentiment of the show. The sentiment we use by cross checking words that have a certain tone to them. By analyzing the most frequent types of negative and positive words used, we can get an idea of how the tone of the show itself might be.</h3>
-<pre class="r"><code>
-a &lt;- read.subtitles.serie(dir = &quot;C:/Users/Joey/Desktop/randm/series/&quot;)
+<pre><code>a &lt;- read.subtitles.serie(dir = &quot;C:/Users/Joey/Desktop/randm/series/&quot;)
+
 ## Read: 1 seasons, 31 episodes
+
 df &lt;- subDataFrame(a) 
 df$Text &lt;- tolower(df$Text) 
 df$Text&lt;- gsub(&quot;[[:punct:]]&quot;,&quot;&quot;, df$Text)
@@ -106,7 +107,8 @@ ggplot(randmSent, aes(sentiment)) + geom_bar(fill = &quot;orange&quot;, color = 
 <h4>     Let’s look at each season to see if this is the case for every season:</h4>
 <pre><code>## [1] &quot;Sentiment of Rick and Morty By Season: &quot;</code></pre>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<pre class="r"><code>topwords2
+<pre><code>topwords2
+
 ## # A tibble: 1,471 x 10
 ## # Groups:   season_num [?]
 ##       ID  Timecode.in Timecode.out         season season_num episode_num
@@ -141,8 +143,7 @@ ggplot(randmSent, aes(sentiment)) + geom_bar(fill = &quot;orange&quot;, color = 
 <div id="tf-idf" class="section level4">
 <h4>TF-IDF</h4>
 <p>tf-idf is the term frequency-inverse document frequency. It plays a large part in text mining. Words that appear often get a lower tf-idf and uncommon ones a higher tf-idf. So, let’s plot the top 20 tf-idf words per season and exclude main character names, very common everyday words, aka stop words, and some random words from the subtitle file.</p>
-<pre class="r"><code>
-episodeWords &lt;- df %&gt;% unnest_tokens(word, Text) %&gt;% anti_join(
+<pre><code>episodeWords &lt;- df %&gt;% unnest_tokens(word, Text) %&gt;% anti_join(
 rbind(data.frame(word = c(&quot;xhmikosr&quot;, &quot;www.addic7ed.com&quot;, &quot;sync&quot;,
 &quot;corrections&quot;), lexicon = &quot;custom&quot;))) %&gt;% count(season_num, word, sort = TRUE) %&gt;% ungroup()
 totalWords &lt;- episodeWords %&gt;% group_by(season_num) %&gt;% summarize(total =
@@ -154,14 +155,15 @@ plotWords %&gt;% top_n(20) %&gt;% ggplot(aes(word, tf_idf, fill = as.factor(seas
 NULL, y = &quot;tf-idf&quot;) + coord_flip() </code></pre>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-6-1.png" width="576" /></p>
 <p>We can see from that the top positions for each season are: meeseeks, unity and pickle, which, if you watch Rick and Morty, is not so suprising.</p>
-<pre class="r"><code>plotWords %&gt;% group_by(season_num) %&gt;% top_n(15) %&gt;% ungroup %&gt;%
+<pre><code>plotWords %&gt;% group_by(season_num) %&gt;% top_n(15) %&gt;% ungroup %&gt;%
 ggplot(aes(word, tf_idf, fill = as.factor(season_num))) + geom_col(show.legend =
 FALSE) + labs(x = NULL, y = &quot;tf-idf&quot;) + facet_wrap(~season_num, ncol = 1, scales
 = &quot;free&quot;) + coord_flip()
+
 ## Selecting by tf_idf</code></pre>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-7-1.png" width="576" /> ##Now we go to another important topic in text mining, N-Grams.<br />
 #### N-grams allow us to look at the relationship between words in text. We will use bigrams, they’re called bigrams because we set N=2, which means we are looking at only pairs of words at a time. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should work best. Using bigrams, we can see what words follow specific words. This is how we can approach the problem with the word “god” from the sentiment.</p>
-<pre class="r"><code>episodeGrams &lt;- df %&gt;% unnest_tokens(bigram, Text, token = &quot;ngrams&quot;, n = 2)
+<pre><code>episodeGrams &lt;- df %&gt;% unnest_tokens(bigram, Text, token = &quot;ngrams&quot;, n = 2)
 episodeGrams &lt;- episodeGrams %&gt;% filter((bigram != &quot;xhmikosr wwwaddic7edcom&quot;) &amp;
 (bigram != &quot;suspenseful music&quot;) &amp; (bigram != &quot;music&quot;))
 episodeGramsSeperate &lt;- episodeGrams %&gt;% separate(bigram, c(&quot;word1&quot;, &quot;word2&quot;),sep = &quot; &quot;) 
@@ -171,7 +173,9 @@ gramcount &lt;- episodeGramsFilter %&gt;% count(word1, word2, sort = TRUE)
 gramcountUnited &lt;- episodeGramsFilter %&gt;% unite(bigram, word1, word2, sep = &quot; &quot;)
  
 episodeGramsSeperate %&gt;% filter(word1 ==&quot;god&quot;) %&gt;% count(word2, sort =TRUE) %&gt;% top_n(5)
+
 ## Selecting by n
+
 ## # A tibble: 6 x 2
 ##   word2     n
 ##   &lt;chr&gt; &lt;int&gt;
@@ -181,8 +185,11 @@ episodeGramsSeperate %&gt;% filter(word1 ==&quot;god&quot;) %&gt;% count(word2, 
 ## 4    is     6
 ## 5 morty     5
 ## 6  what     5
+
 episodeGramsSeperate %&gt;% filter(word2 ==&quot;god&quot;) %&gt;% count(word1, sort =TRUE) %&gt;% top_n(5) 
+
 ## Selecting by n
+
 ## # A tibble: 5 x 2
 ##   word1     n
 ##   &lt;chr&gt; &lt;int&gt;
@@ -191,10 +198,16 @@ episodeGramsSeperate %&gt;% filter(word2 ==&quot;god&quot;) %&gt;% count(word1, 
 ## 3 thank     7
 ## 4    of     5
 ## 5     a     4
+
 bigram_tf_idf &lt;- gramcountUnited %&gt;% filter((bigram != &quot;xhmikosrwwwaddic7edcom&quot;) &amp; (bigram != &quot;suspenseful music plays&quot;) &amp; (bigram != &quot;music
-plays&quot;)  &amp; (bigram != &quot;suspenseful music&quot;) &amp;  (bigram != &quot;speaking alien language&quot;) &amp; (bigram != &quot;laughter&quot;)) %&gt;% count(season_num, bigram) %&gt;% bind_tf_idf(bigram, season_num, n)%&gt;% arrange(desc(tf_idf))  </code></pre>
-<pre class="r"><code>randmSent &lt;- tidydf %&gt;% inner_join(nrcSent)
+plays&quot;)  &amp; (bigram != &quot;suspenseful music&quot;) &amp;  (bigram != &quot;speaking alien language&quot;) &amp; (bigram != &quot;laughter&quot;)) %&gt;% count(season_num, bigram) %&gt;% bind_tf_idf(bigram, season_num, n)%&gt;% arrange(desc(tf_idf))  
+
+
+
+randmSent &lt;- tidydf %&gt;% inner_join(nrcSent)
+
 ## Joining, by = &quot;word&quot;
+
 randmSent[which(randmSent$word ==&quot;god&quot;),]$sentiment &lt;-&quot;negative&quot;
 randmSent &lt;- randmSent %&gt;% filter(sentiment == &quot;positive&quot; | sentiment == &quot;negative&quot;)
 ggplot(randmSent, aes(sentiment)) +geom_bar(fill = &quot;orange&quot;, color = &quot;black&quot;)</code></pre>
@@ -206,18 +219,18 @@ ggplot(randmSent, aes(sentiment)) +geom_bar(fill = &quot;orange&quot;, color = &
 <div id="now-we-get-a-graph-that-rick-and-morty-fans-might-find-more-accurate.-i-know-i-do." class="section level4">
 <h4>Now we get a graph that Rick and Morty fans might find more accurate. I know I do.</h4>
 <p>Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, there’s no suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text. As you can see, most bigrams lead back to Rick and Morty.</p>
-<pre class="r"><code>bigram_tf_idf %&gt;% group_by(season_num) %&gt;% top_n(5) %&gt;% ungroup %&gt;% ggplot(aes(bigram, tf_idf, fill = as.factor(season_num))) +geom_col(show.legend =  FALSE) + labs(x = NULL, y =&quot;tf-idf&quot;) + facet_wrap(~season_num, ncol = 1, scales = &quot;free&quot;) + coord_flip()
+<pre><code>bigram_tf_idf %&gt;% group_by(season_num) %&gt;% top_n(5) %&gt;% ungroup %&gt;% ggplot(aes(bigram, tf_idf, fill = as.factor(season_num))) +geom_col(show.legend =  FALSE) + labs(x = NULL, y =&quot;tf-idf&quot;) + facet_wrap(~season_num, ncol = 1, scales = &quot;free&quot;) + coord_flip()
+
 ## Selecting by tf_idf</code></pre>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-10-1.png" width="576" /></p>
-<pre class="r"><code>
-bigram_graph &lt;- gramcount %&gt;% filter(n &gt;= 5) %&gt;% graph_from_data_frame()
+<pre><code>bigram_graph &lt;- gramcount %&gt;% filter(n &gt;= 5) %&gt;% graph_from_data_frame()
 set.seed(2016)
 x &lt;- grid::arrow(type = &quot;closed&quot;, length = unit(.15, &quot;inches&quot;))
 
 ggraph(bigram_graph, layout = &quot;fr&quot;) + geom_edge_link(aes(edge_alpha = n),
   show.legend = FALSE, arrow = x, end_cap = circle(.07, &#39;inches&#39;)) +
   geom_node_point(color = &quot;lightblue&quot;, size = 8) + geom_node_text(aes(label =name), vjust = 1, hjust = 1) + theme_void()</code></pre>
-<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-10-2.png" width="576" /> ##<strong>Summary:</strong><br />
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-10-2.png" width="576" /> # <strong>Summary:</strong><br />
 I had a lot of fun with this project. Being a fan of the show did help with this project in so many ways. For example, the issue with the term “god” being seen as a positive sentiment in the show when I knew it was not being used positively. Having an idea of what a graph should produce and getting something totally unexpected made me look deep into my code and find a problem I would never have known was there if I didn’t know the show. If you’re going to do a text analysis project, you should be passionate about both what you are analyzing and the process of analyzing. Thanks so much for taking the time to look at my project. I hope you found something interesting during your read.</p>
 </div>
 </div>

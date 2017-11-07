@@ -19,14 +19,15 @@ library(ggraph)
 library(ggplot2) 
 ```
 
-## **Sentiment Analysis on Rick and Morty**:  
+## **Sentiment Analysis on Rick and Morty**:   
+(WARNING: STRONG LANGUAGE APPEARS IN THIS TEXT ANALYSIS)  
 ### After reading *Text Mining with R*, I was trying to think of a project I could apply what I had learned. It wasn't until I came across this blog post by Tamas Szilagyi:  [A TIDY TEXT ANALYSIS OF RICK ANDMORTY](http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/)  that my eyes were opened. 
   
 <div style="width:300px; height=200px">
 ![](rick-and-morty.jpg)
 </div>
   
-### As a huge Rick and Morty fan, the idea of combining text analysis and my favorite show was perfect. I did my best to make this project my own. I looked online for the subtitles and began cleaning up the text. I started with looking at the overall sentiment of the show.  
+### As a huge Rick and Morty fan, the idea of combining text analysis and my favorite show was perfect. I did my best to make this project my own. I looked online for the subtitles and began cleaning up the text. I started with looking at the overall sentiment of the show. The sentiment we use by cross checking words that have a certain tone to them. By analyzing the most frequent types of negative and positive words used, we can get an idea of how the tone of the show itself might be.  
 ```{r, warning=FALSE, message=FALSE,fig.width=7, fig.height=5}
 
 a <- read.subtitles.serie(dir = "C:/Users/Joey/Desktop/randm/series/")
@@ -75,7 +76,7 @@ ggplot(topwords2, aes(word, fill = (sentiment))) + geom_bar(show.legend = TRUE) 
 coord_flip() + facet_wrap(~season_num, scales = "free_y", nrow = 3) + labs(title
 = "By Season")
 ```  
-#### One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. The show is known for rejecting any notion of the existence of a higher being, higher than Rick that is.  I was suprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: "Oh my god", which is not usually used as a positive sentiment. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later. For now, let's keep the focus of seeing how each season differs.  
+###One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. The show is known for rejecting any notion of the existence of a higher being, higher than Rick that is.  I was suprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: "Oh my god", which is not usually used as a positive sentiment. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later. For now, let's keep the focus of seeing how each season differs.  
 <div style="width:300px; height=200px">  ![](d68.gif)  </div>  
 
 ### Number of times each character is mentioned per season:   
@@ -87,9 +88,10 @@ facet_wrap(~season_num) + scale_fill_manual(values= alpha(c("red",
 element_text(angle=90, vjust=1))
 ```  
   
-#### It's not suprising that the most mentioned characters of Rick and Morty are Rick and Morty. However, we can see Morty was the real star of the first season. He was mentioned about twice as much as Rick and after the first season, he dropped all the way down. Justin Roiland, the voice of Rick and Morty, said in a podast that he felt Rick saying "Morty" was a verbal crutch and wanted to try to get rid of it. As we can see by the graph, he really did follow through.  
+#### It's not suprising that the most mentioned characters of Rick and Morty are Rick and Morty. However, we can see Morty was the real star of the first season. He was mentioned about twice as much as Rick and after the first season, he dropped all the way down. Justin Roiland, the voice of Rick and Morty, said in a podcast that he felt Rick saying "Morty" was a verbal crutch and wanted to try to stray away from it. As we can see by the graph, he really did follow through.  
 
-#### TF-IDF is the term frequency-inverse document frequency. It is a large part in text mining. Words that appear often get a lower tf-idf and uncommon ones a higher tf-idf. So, let's plot the top 20 words per season and exclude main character names, very common everyday words, aka stop words, and some random words from the subtitle file.    
+#### TF-IDF  
+tf-idf is the term frequency-inverse document frequency. It plays a large part in text mining. Words that appear often get a lower tf-idf and uncommon ones a higher tf-idf. So, let's plot the top 20 tf-idf words per season and exclude main character names, very common everyday words, aka stop words, and some random words from the subtitle file.    
 ```{r, warning=FALSE, message=FALSE ,fig.width= 6, fig.height=10}
 
 episodeWords <- df %>% unnest_tokens(word, Text) %>% anti_join(
@@ -108,13 +110,16 @@ NULL, y = "tf-idf") + coord_flip()
   We can see from that the top positions for each season are: meeseeks, unity and pickle, which, if you watch Rick and Morty, is not so suprising.  
   
   
-##Now we go to another important topic in text mining, N-Grams.  
-#### N-grams allow us to look at the relationship between words in text. We will use bigrams, they're called bigrams because we set N=2, which means we are looking at only pairs of words at a time. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should work best. Using bigrams, we can see what words follow specific words. This is how we can approach the problem with the word "god" from the sentiment. 
+ 
 ```{r,warning=FALSE, fig.width= 6, fig.height=10}
 plotWords %>% group_by(season_num) %>% top_n(15) %>% ungroup %>%
 ggplot(aes(word, tf_idf, fill = as.factor(season_num))) + geom_col(show.legend =
 FALSE) + labs(x = NULL, y = "tf-idf") + facet_wrap(~season_num, ncol = 1, scales
 = "free") + coord_flip()
+```  
+##Now we go to another important topic in text mining, N-Grams.  
+#### N-grams allow us to look at the relationship between words in text. We will use bigrams, they're called bigrams because we set N=2, which means we are looking at only pairs of words at a time. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should work best. Using bigrams, we can see what words follow specific words. This is how we can approach the problem with the word "god" from the sentiment.  
+```{r, warning=FALSE, fig.width= 6, fig.height=10}
 episodeGrams <- df %>% unnest_tokens(bigram, Text, token = "ngrams", n = 2)
 episodeGrams <- episodeGrams %>% filter((bigram != "xhmikosr wwwaddic7edcom") &
 (bigram != "suspenseful music") & (bigram != "music"))
@@ -137,11 +142,12 @@ randmSent[which(randmSent$word =="god"),]$sentiment <-"negative"
 randmSent <- randmSent %>% filter(sentiment == "positive" | sentiment == "negative")
 ggplot(randmSent, aes(sentiment)) +geom_bar(fill = "orange", color = "black")
 ```  
-#### From the table above, we can see the words following the word "god" and the words after the word "god". It looks like "my god"", "oh god" and "god damn" are the most commonly used phrases with the word god. If we assume the context of these phrases to be stricktly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let's see how that changes the overall sentiment of the show.  
+  
+###From the table above, we can see the words following the word "god" and the words after the word "god". It looks like "my god"", "oh god" and "god damn" are the most commonly used phrases with the word god. If we assume the context of these phrases to be stricktly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let's see how that changes the overall sentiment of the show.  
 #### Now we get a graph that Rick and Morty fans might find more accurate. I know I do.   
   
   
- Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, it is not suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text. Not suprising to see that most words lead back to Rick 
+ Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, there's no suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text. As you can see, most bigrams lead back to Rick and Morty. 
 
 ```{r, fig.width= 6, fig.height=10 } 
 bigram_tf_idf %>% group_by(season_num) %>% top_n(5) %>% ungroup %>% ggplot(aes(bigram, tf_idf, fill = as.factor(season_num))) +geom_col(show.legend =  FALSE) + labs(x = NULL, y ="tf-idf") + facet_wrap(~season_num, ncol = 1, scales = "free") + coord_flip()
@@ -154,4 +160,4 @@ ggraph(bigram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n),
   show.legend = FALSE, arrow = x, end_cap = circle(.07, 'inches')) +
   geom_node_point(color = "lightblue", size = 8) + geom_node_text(aes(label =name), vjust = 1, hjust = 1) + theme_void()
 ```  
-## **Summary**
+## **Summary**:  I had a lot of fun with this project. Being a fan of the show did help with this project in so many ways. For example, the issue with the term "god" being seen as a positive sentiment in the show when I knew it was not being used positively. Having an idea of what a graph should produce and getting something totally unexpected made me look deep into my code and find a problem I would never have known was there if I didn't know the show. If you're going to do a text analysis project, you should be passionate about both what you are analyzing and the process of analyzing. Thanks so much for taking the time to look at my project. I hope you found something interesting during your read.

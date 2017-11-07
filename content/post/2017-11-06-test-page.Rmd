@@ -118,9 +118,13 @@ ggplot(aes(word, tf_idf, fill = as.factor(season_num))) + geom_col(show.legend =
 FALSE) + labs(x = NULL, y = "tf-idf") + facet_wrap(~season_num, ncol = 1, scales
 = "free") + coord_flip()
 ```   
-##Now we go to another important topic in text mining, N-Grams.  
+ 
+ Now we go to another important topic in text mining, N-Grams.  
+ 
+   
+  
   N-grams allow us to look at the relationship between words in text. We will use bigrams, they're called bigrams because we set N=2, which means we are looking at only pairs of words at a time. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should work best. Using bigrams, we can see what words follow specific words. This is how we can approach the problem with the word "god" from the sentiment.  
-```{r, warning=FALSE, fig.width= 6, fig.height=10}
+```{r, warning=FALSE}
 episodeGrams <- df %>% unnest_tokens(bigram, Text, token = "ngrams", n = 2)
 episodeGrams <- episodeGrams %>% filter((bigram != "xhmikosr wwwaddic7edcom") &
 (bigram != "suspenseful music") & (bigram != "music"))
@@ -136,7 +140,7 @@ bigram_tf_idf <- gramcountUnited %>% filter((bigram != "xhmikosrwwwaddic7edcom")
 plays")  & (bigram != "suspenseful music") &  (bigram != "speaking alien language") & (bigram != "laughter")) %>% count(season_num, bigram) %>% bind_tf_idf(bigram, season_num, n)%>% arrange(desc(tf_idf))  
 ```  
 
-
+###From the tibble above, we can see the words following the word "god" and the words after the word "god". It looks like "my god"", "oh god" and "god damn" are the most commonly used phrases with the word god. If we assume the context of these phrases to be stricktly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let's see how that changes the overall sentiment of the show.  
 ```{r}
 randmSent <- tidydf %>% inner_join(nrcSent)
 randmSent[which(randmSent$word =="god"),]$sentiment <-"negative"
@@ -144,7 +148,7 @@ randmSent <- randmSent %>% filter(sentiment == "positive" | sentiment == "negati
 ggplot(randmSent, aes(sentiment)) +geom_bar(fill = "orange", color = "black")
 ```  
   
-###From the table above, we can see the words following the word "god" and the words after the word "god". It looks like "my god"", "oh god" and "god damn" are the most commonly used phrases with the word god. If we assume the context of these phrases to be stricktly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let's see how that changes the overall sentiment of the show.  
+
 #### Now we get a graph that Rick and Morty fans might find more accurate. I know I do.   
   
   
@@ -161,5 +165,6 @@ ggraph(bigram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n),
   show.legend = FALSE, arrow = x, end_cap = circle(.07, 'inches')) +
   geom_node_point(color = "lightblue", size = 8) + geom_node_text(aes(label =name), vjust = 1, hjust = 1) + theme_void()
 ```  
- **Summary:**   
-  I had a lot of fun with this project. Being a fan of the show did help with this project in so many ways. For example, the issue with the term "god" being seen as a positive sentiment in the show when I knew it was not being used positively. Having an idea of what a graph should produce and getting something totally unexpected made me look deep into my code and find a problem I would never have known was there if I didn't know the show. If you're going to do a text analysis project, you should be passionate about both what you are analyzing and the process of analyzing. Thanks so much for taking the time to look at my project. I hope you found something interesting during your read.
+   
+**Summary:**     
+    I had a lot of fun with this project. Being a fan of the show did help with this project in so many ways. For example, the issue with the term "god" being seen as a positive sentiment in the show when I knew it was not being used positively. Having an idea of what a graph should produce and getting something totally unexpected made me look deep into my code and find a problem I would never have known was there if I didn't know the show. If you're going to do a text analysis project, you should be passionate about both what you are analyzing and the process of analyzing. Thanks so much for taking the time to look at my project. I hope you found something interesting during your read.

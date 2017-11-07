@@ -101,8 +101,8 @@ FALSE) + labs(x = NULL, y = &quot;tf-idf&quot;) + facet_wrap(~season_num, ncol =
 = &quot;free&quot;) + coord_flip()
 
 ## Selecting by tf_idf</code></pre>
-<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-7-1.png" width="576" /> ##Now we go to another important topic in text mining, N-Grams.<br />
-N-grams allow us to look at the relationship between words in text. We will use bigrams, they’re called bigrams because we set N=2, which means we are looking at only pairs of words at a time. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should work best. Using bigrams, we can see what words follow specific words. This is how we can approach the problem with the word “god” from the sentiment.</p>
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-7-1.png" width="576" /> Now we go to another important topic in text mining, N-Grams.</p>
+<p>N-grams allow us to look at the relationship between words in text. We will use bigrams, they’re called bigrams because we set N=2, which means we are looking at only pairs of words at a time. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should work best. Using bigrams, we can see what words follow specific words. This is how we can approach the problem with the word “god” from the sentiment.</p>
 <pre><code>episodeGrams &lt;- df %&gt;% unnest_tokens(bigram, Text, token = &quot;ngrams&quot;, n = 2)
 episodeGrams &lt;- episodeGrams %&gt;% filter((bigram != &quot;xhmikosr wwwaddic7edcom&quot;) &amp;
 (bigram != &quot;suspenseful music&quot;) &amp; (bigram != &quot;music&quot;))
@@ -140,11 +140,12 @@ episodeGramsSeperate %&gt;% filter(word2 ==&quot;god&quot;) %&gt;% count(word1, 
 ## 5     a     4
 
 bigram_tf_idf &lt;- gramcountUnited %&gt;% filter((bigram != &quot;xhmikosrwwwaddic7edcom&quot;) &amp; (bigram != &quot;suspenseful music plays&quot;) &amp; (bigram != &quot;music
-plays&quot;)  &amp; (bigram != &quot;suspenseful music&quot;) &amp;  (bigram != &quot;speaking alien language&quot;) &amp; (bigram != &quot;laughter&quot;)) %&gt;% count(season_num, bigram) %&gt;% bind_tf_idf(bigram, season_num, n)%&gt;% arrange(desc(tf_idf))  
-
-
-
-randmSent &lt;- tidydf %&gt;% inner_join(nrcSent)
+plays&quot;)  &amp; (bigram != &quot;suspenseful music&quot;) &amp;  (bigram != &quot;speaking alien language&quot;) &amp; (bigram != &quot;laughter&quot;)) %&gt;% count(season_num, bigram) %&gt;% bind_tf_idf(bigram, season_num, n)%&gt;% arrange(desc(tf_idf))  </code></pre>
+</div>
+</div>
+<div id="from-the-tibble-above-we-can-see-the-words-following-the-word-god-and-the-words-after-the-word-god.-it-looks-like-my-godoh-god-and-god-damn-are-the-most-commonly-used-phrases-with-the-word-god.-if-we-assume-the-context-of-these-phrases-to-be-stricktly-negative-which-as-an-avid-fan-i-can-say-that-they-are-definitely-used-more-in-a-negative-context-and-if-we-treat-them-as-such-lets-see-how-that-changes-the-overall-sentiment-of-the-show." class="section level3">
+<h3>From the tibble above, we can see the words following the word “god” and the words after the word “god”. It looks like “my god”“,”oh god&quot; and “god damn” are the most commonly used phrases with the word god. If we assume the context of these phrases to be stricktly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let’s see how that changes the overall sentiment of the show.</h3>
+<pre><code>randmSent &lt;- tidydf %&gt;% inner_join(nrcSent)
 
 ## Joining, by = &quot;word&quot;
 
@@ -152,10 +153,6 @@ randmSent[which(randmSent$word ==&quot;god&quot;),]$sentiment &lt;-&quot;negativ
 randmSent &lt;- randmSent %&gt;% filter(sentiment == &quot;positive&quot; | sentiment == &quot;negative&quot;)
 ggplot(randmSent, aes(sentiment)) +geom_bar(fill = &quot;orange&quot;, color = &quot;black&quot;)</code></pre>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-</div>
-</div>
-<div id="from-the-table-above-we-can-see-the-words-following-the-word-god-and-the-words-after-the-word-god.-it-looks-like-my-godoh-god-and-god-damn-are-the-most-commonly-used-phrases-with-the-word-god.-if-we-assume-the-context-of-these-phrases-to-be-stricktly-negative-which-as-an-avid-fan-i-can-say-that-they-are-definitely-used-more-in-a-negative-context-and-if-we-treat-them-as-such-lets-see-how-that-changes-the-overall-sentiment-of-the-show." class="section level3">
-<h3>From the table above, we can see the words following the word “god” and the words after the word “god”. It looks like “my god”“,”oh god&quot; and “god damn” are the most commonly used phrases with the word god. If we assume the context of these phrases to be stricktly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let’s see how that changes the overall sentiment of the show.</h3>
 <div id="now-we-get-a-graph-that-rick-and-morty-fans-might-find-more-accurate.-i-know-i-do." class="section level4">
 <h4>Now we get a graph that Rick and Morty fans might find more accurate. I know I do.</h4>
 <p>Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, there’s no suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text. As you can see, most bigrams lead back to Rick and Morty.</p>
@@ -170,7 +167,8 @@ x &lt;- grid::arrow(type = &quot;closed&quot;, length = unit(.15, &quot;inches&q
 ggraph(bigram_graph, layout = &quot;fr&quot;) + geom_edge_link(aes(edge_alpha = n),
   show.legend = FALSE, arrow = x, end_cap = circle(.07, &#39;inches&#39;)) +
   geom_node_point(color = &quot;lightblue&quot;, size = 8) + geom_node_text(aes(label =name), vjust = 1, hjust = 1) + theme_void()</code></pre>
-<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-10-2.png" width="576" /> <strong>Summary:</strong><br />
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-10-2.png" width="576" /></p>
+<p><strong>Summary:</strong><br />
 I had a lot of fun with this project. Being a fan of the show did help with this project in so many ways. For example, the issue with the term “god” being seen as a positive sentiment in the show when I knew it was not being used positively. Having an idea of what a graph should produce and getting something totally unexpected made me look deep into my code and find a problem I would never have known was there if I didn’t know the show. If you’re going to do a text analysis project, you should be passionate about both what you are analyzing and the process of analyzing. Thanks so much for taking the time to look at my project. I hope you found something interesting during your read.</p>
 </div>
 </div>

@@ -22,7 +22,7 @@ library(ggplot2)
 
 ## **Sentiment Analysis on Rick and Morty:** (WARNING: STRONG LANGUAGE APPEARS IN THIS TEXT ANALYSIS)  
   
-### After reading *Text Mining with R*, I was trying to think of a project I could apply what I had learned. It wasn't until I came across this blog post by Tamas Szilagyi:  [A TIDY TEXT ANALYSIS OF RICK ANDMORTY](http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/)  that my eyes were opened. 
+### After reading *Text Mining with R*, I was trying to think of a project I could apply what I had learned. It wasn't until I came across this blog post by Tamas Szilagyi:  [A TIDY TEXT ANALYSIS OF RICK AND MORTY](http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/)  that my eyes were opened. 
   
 <div style="width:300px; height=200px">
 ![](rick-and-morty.jpg)

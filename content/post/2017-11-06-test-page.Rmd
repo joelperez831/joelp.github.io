@@ -1,19 +1,25 @@
 ---
 title: Test Page
-author: ''
+author: 'Joel Perez'
 date: '2017-11-06'
 slug: test-page
-categories: []
+categories: ["R"]
 tags: []
-
 ---
 
 
-```{r}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE)
+```
+<html>
 
-```  
-##**Sentiment Analysis on Rick and Morty**:  
-###After reading *Text Mining with R*, I was trying to think of a project I could apply what I had learned. It wasn't until I came across this blog post by Tamas Szilagyi:  [A TIDY TEXT ANALYSIS OF RICK ANDMORTY](http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/)  that my eyes were opened. 
+  
+
+<body>
+## **Sentiment Analysis on Rick and Morty**:  
+### After reading *Text Mining with R*, I was trying to think of a project I could apply what I had learned. It wasn't until I came across this blog post by Tamas Szilagyi:  [A TIDY TEXT ANALYSIS OF RICK ANDMORTY](http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/)  that my eyes were opened. 
+</body>
+</html>
 <div style="width:300px; height=200px">
 ![](rick-and-morty.jpg)
 </div>
@@ -40,7 +46,7 @@ randmSent <- tidydf %>% inner_join(nrcSent)
 ggplot(randmSent, aes(sentiment)) + geom_bar(fill = "orange", color = "black")
 ```    
 
-##**"The answer is: Don't think about it."**  
+## **"The answer is: Don't think about it."**  
 #### &nbsp;&nbsp;&nbsp;&nbsp; As many think of Rick and Morty as a very dark show. According to the sentiment analysis of the show in its entirety the shows text is actually more netural, with an almost equal amount of negative and positive sentiments.  
 ####  &nbsp;&nbsp;&nbsp;&nbsp; Let's look at each season to see if this is the case for every season:  
 
@@ -62,7 +68,7 @@ topwords <- topwords %>% filter(word != "ill")
 topwords2 <- bind_rows(tidy1, tidy2, tidy3) %>% count(season_num, word) %>%filter(n > 50) %>% top_n(15)
 topwords2 <-topwords %>% inner_join(topwords2)
 ```  
-#Top negative and positive sentiments:  
+# Top negative and positive sentiments:  
 ```{r, echo=FALSE, warning=FALSE, message=FALSE,fig.width=7,fig.height= 11}
 ggplot(topwords2, aes(word, fill = (sentiment))) + geom_bar(show.legend = TRUE) +
 coord_flip() + facet_wrap(~season_num, scales = "free_y", nrow = 3) + labs(title

@@ -6,10 +6,19 @@
     <description>Recent content in R on A Hugo website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 23 Jul 2015 21:13:14 -0500</lastBuildDate>
+    <lastBuildDate>Mon, 06 Nov 2017 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Test Page</title>
+      <link>/2017/11/06/test-page/</link>
+      <pubDate>Mon, 06 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/2017/11/06/test-page/</guid>
+      <description>Sentiment Analysis on Rick and Morty:After reading Text Mining with R, I was trying to think of a project I could apply what I had learned. It wasn’t until I came across this blog post by Tamas Szilagyi: A TIDY TEXT ANALYSIS OF RICK ANDMORTY that my eyes were opened.As a huge Rick and Morty fan, the idea of combining text analysis and my favorite show was perfect.</description>
+    </item>
     
     <item>
       <title>Hello R Markdown</title>

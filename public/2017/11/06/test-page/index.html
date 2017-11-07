@@ -59,7 +59,7 @@
 
   <article class="article">
     
-    <span class="article-duration">1 min read</span>
+    <span class="article-duration">6 min read</span>
     
 
     <h1 class="article-title">Test Page</h1>
@@ -71,18 +71,119 @@
     <div class="article-content">
       <div id="sentiment-analysis-on-rick-and-morty" class="section level2">
 <h2><strong>Sentiment Analysis on Rick and Morty</strong>:</h2>
-<div id="after-reading-text-mining-with-r-i-was-trying-to-think-of-a-project-i-could-apply-what-i-had-learned.-it-wasnt-until-i-came-across-this-blog-post-by-tamas-szilagyi-a-tidy-text-analysis-of-rick-and-morty-that-my-eyes-were-opened." class="section level3">
-<h3>After reading <em>Text Mining with R</em>, I was trying to think of a project I could apply what I had learned. It wasn’t until I came across this blog post by Tamas Szilagyi: <a href="http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/">A TIDY TEXT ANALYSIS OF RICK AND MORTY</a> that my eyes were opened.</h3>
+<div id="after-reading-text-mining-with-r-i-was-trying-to-think-of-a-project-i-could-apply-what-i-had-learned.-it-wasnt-until-i-came-across-this-blog-post-by-tamas-szilagyi-a-tidy-text-analysis-of-rick-andmorty-that-my-eyes-were-opened." class="section level3">
+<h3>After reading <em>Text Mining with R</em>, I was trying to think of a project I could apply what I had learned. It wasn’t until I came across this blog post by Tamas Szilagyi: <a href="http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/">A TIDY TEXT ANALYSIS OF RICK ANDMORTY</a> that my eyes were opened.</h3>
+<div style="width:300px; height=200px">
 <div class="figure">
 <img src="rick-and-morty.jpg" />
 
 </div>
 </div>
+</div>
 <div id="as-a-huge-rick-and-morty-fan-the-idea-of-combining-text-analysis-and-my-favorite-show-was-perfect.-i-did-my-best-to-make-this-project-my-own.-i-looked-online-for-the-subtitles-and-began-cleaning-up-the-text.-i-started-with-looking-at-the-overall-sentiment-of-the-show." class="section level3">
 <h3>As a huge Rick and Morty fan, the idea of combining text analysis and my favorite show was perfect. I did my best to make this project my own. I looked online for the subtitles and began cleaning up the text. I started with looking at the overall sentiment of the show.</h3>
 <pre><code>## Read: 1 seasons, 31 episodes</code></pre>
-<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 </div>
+</div>
+<div id="the-answer-is-dont-think-about-it." class="section level2">
+<h2><strong>“The answer is: Don’t think about it.”</strong></h2>
+<div id="as-many-think-of-rick-and-morty-as-a-very-dark-show.-according-to-the-sentiment-analysis-of-the-show-in-its-entirety-the-shows-text-is-actually-more-netural-with-an-almost-equal-amount-of-negative-and-positive-sentiments." class="section level4">
+<h4>     As many think of Rick and Morty as a very dark show. According to the sentiment analysis of the show in its entirety the shows text is actually more netural, with an almost equal amount of negative and positive sentiments.</h4>
+</div>
+<div id="lets-look-at-each-season-to-see-if-this-is-the-case-for-every-season" class="section level4">
+<h4>     Let’s look at each season to see if this is the case for every season:</h4>
+<pre><code>## [1] &quot;Sentiment of Rick and Morty By Season: &quot;</code></pre>
+<img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-3-1.png" width="672" /> #Top negative and positive sentiments:<br />
+<img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-4-1.png" width="672" /> #### One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. My hypothesis is that it depends on the context of how mother is being used. Another interesting find is that the most common word in each season is god. The show is known for questioning the existence of god, which I was suprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: “Oh my god”, which is not usually a good thing. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later.<br />
+
+<div style="width:300px; height=200px">
+<img src="d68.gif" />
+</div>
+</div>
+<div id="number-of-times-each-character-is-mentioned-per-season" class="section level3">
+<h3>Number of times each character is mentioned per season:</h3>
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-5-1.png" width="672" /> #### It’s not suprising that the most mentioned characters of Rick and Morty are Rick and Morty. However, we can see Morty was the real star of the first season. He was mentioned about twice as much as Rick and after the first season, he dropped all the way down. Justin Roiland, the voice of Rick and Morty, said he felt Rick saying “Morty” was a verbal crutch and wanted to try to get rid of it. As we can see by the graph, he really did follow through.</p>
+<div id="term-frequencies-are-a-large-part-in-text-mining.-so-lets-plot-the-top-20" class="section level4">
+<h4>Term frequencies are a large part in text mining. So, let’s plot the top 20</h4>
+<p>words per season and exclude main character names and common words.</p>
+<pre class="r"><code>episodeWords &lt;- df %&gt;% unnest_tokens(word, Text) %&gt;% anti_join(
+rbind(data.frame(word = c(&quot;xhmikosr&quot;, &quot;www.addic7ed.com&quot;, &quot;sync&quot;,
+&quot;corrections&quot;), lexicon = &quot;custom&quot;))) %&gt;% count(season_num, word, sort = TRUE) %&gt;% ungroup()
+totalWords &lt;- episodeWords %&gt;% group_by(season_num) %&gt;% summarize(total =
+sum(n))
+episodeWords &lt;- left_join(episodeWords, totalWords)
+episodeWords &lt;- episodeWords %&gt;% bind_tf_idf(word, season_num, n)
+plotWords &lt;- episodeWords %&gt;% arrange(desc(tf_idf)) %&gt;% mutate(word =factor(word, levels = rev(unique(word))))
+plotWords %&gt;% top_n(20) %&gt;% ggplot(aes(word, tf_idf, fill = as.factor(season_num))) + geom_col() + labs(x=
+NULL, y = &quot;tf-idf&quot;) + coord_flip() </code></pre>
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-6-1.png" width="576" /> We can see from that the top positions for each season are: meeseeks, unity and pickle, which, if you watch Rick and Morty, is not so suprising. One thing I loved is the word “noob” made the list. Again, if you watch Rick and Morty, you know there is a character called, “Noob Noob”, who is one of my favorite temporary side characters on the show.</p>
+</div>
+</div>
+</div>
+<div id="now-we-go-to-another-imortant-topic-in-text-mining-n-grams." class="section level2">
+<h2>Now we go to another imortant topic in text mining, N-Grams.</h2>
+<pre class="r"><code>plotWords %&gt;% group_by(season_num) %&gt;% top_n(15) %&gt;% ungroup %&gt;%
+ggplot(aes(word, tf_idf, fill = as.factor(season_num))) + geom_col(show.legend =
+FALSE) + labs(x = NULL, y = &quot;tf-idf&quot;) + facet_wrap(~season_num, ncol = 1, scales
+= &quot;free&quot;) + coord_flip()</code></pre>
+<pre><code>## Selecting by tf_idf</code></pre>
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<pre class="r"><code>episodeGrams &lt;- df %&gt;% unnest_tokens(bigram, Text, token = &quot;ngrams&quot;, n = 2)
+episodeGrams &lt;- episodeGrams %&gt;% filter((bigram != &quot;xhmikosr wwwaddic7edcom&quot;) &amp;
+(bigram != &quot;suspenseful music&quot;) &amp; (bigram != &quot;music&quot;))
+episodeGramsSeperate &lt;- episodeGrams %&gt;% separate(bigram, c(&quot;word1&quot;, &quot;word2&quot;),sep = &quot; &quot;) 
+episodeGramsFilter &lt;- episodeGramsSeperate %&gt;% filter(!word1 %in%
+stop_words$word) %&gt;% filter(!word2 %in% stop_words$word) 
+gramcount &lt;- episodeGramsFilter %&gt;% count(word1, word2, sort = TRUE) 
+gramcountUnited &lt;- episodeGramsFilter %&gt;% unite(bigram, word1, word2, sep = &quot; &quot;)
+## Top 5 words after the word &quot;god&quot; 
+episodeGramsSeperate %&gt;% filter(word1 ==&quot;god&quot;) %&gt;% count(word2, sort =TRUE) %&gt;% top_n(5)</code></pre>
+<pre><code>## Selecting by n</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   word2     n
+##   &lt;chr&gt; &lt;int&gt;
+## 1  damn    24
+## 2    oh    15
+## 3     i    12
+## 4    is     6
+## 5 morty     5
+## 6  what     5</code></pre>
+<pre class="r"><code>## Top 5 words following the word &quot;god&quot; 
+episodeGramsSeperate %&gt;% filter(word2 ==&quot;god&quot;) %&gt;% count(word1, sort =TRUE) %&gt;% top_n(5) </code></pre>
+<pre><code>## Selecting by n</code></pre>
+<pre><code>## # A tibble: 5 x 2
+##   word1     n
+##   &lt;chr&gt; &lt;int&gt;
+## 1    my   132
+## 2    oh    49
+## 3 thank     7
+## 4    of     5
+## 5     a     4</code></pre>
+<pre class="r"><code>bigram_tf_idf &lt;- gramcountUnited %&gt;% filter((bigram != &quot;xhmikosrwwwaddic7edcom&quot;) &amp; (bigram != &quot;suspenseful music plays&quot;) &amp; (bigram != &quot;music
+plays&quot;)  &amp; (bigram != &quot;suspenseful music&quot;) &amp;  (bigram != &quot;speaking alien language&quot;) &amp; (bigram != &quot;laughter&quot;)) %&gt;% count(season_num, bigram) %&gt;% bind_tf_idf(bigram, season_num, n)%&gt;% arrange(desc(tf_idf))  </code></pre>
+<div id="n-grams-allow-us-to-look-at-the-relationship-between-words-in-text.-from-the-table-above-we-can-see-the-words-following-the-word-god-and-the-words-after-the-word-god.-it-looks-like-my-godoh-god-and-god-damn-are-the-most-commonly-used-phrases-with-the-word-god.-if-we-assume-the-context-of-these-phrases-to-be-stricktly-negative-which-as-an-avid-fan-i-can-say-that-they-are-definitely-used-more-in-a-negative-context-and-if-we-treat-them-as-such-lets-see-how-that-changes-the-overall-sentiment-of-the-show." class="section level4">
+<h4>N-grams allow us to look at the relationship between words in text. From the table above, we can see the words following the word “god” and the words after the word “god”. It looks like “my god”“,”oh god&quot; and “god damn” are the most commonly used phrases with the word god. If we assume the context of these phrases to be stricktly negative, which as an avid fan, I can say that they are definitely used more in a negative context and if we treat them as such, let’s see how that changes the overall sentiment of the show.</h4>
+<pre class="r"><code>randmSent &lt;- tidydf %&gt;% inner_join(nrcSent)</code></pre>
+<pre><code>## Joining, by = &quot;word&quot;</code></pre>
+<pre class="r"><code>randmSent[which(randmSent$word ==&quot;god&quot;),]$sentiment &lt;-&quot;negative&quot;
+ggplot(randmSent, aes(sentiment)) +geom_bar(fill = &quot;orange&quot;, color = &quot;black&quot;)</code></pre>
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-8-1.png" width="672" /> #### Now we get a graph that Rick and Morty fans might find more accurate.</p>
+</div>
+</div>
+<div id="using-bigrams-again-we-can-see-the-most-used-pair-words-for-each-season.-if-you-have-watched-the-interdimensional-cable-episode-it-is-not-suprise-that-jan-michael-is-on-the-list.-pretty-good-looking-graph-using-bigrams.-if-we-wanted-to-look-at-pairs-of-three-words-this-could-easily-be-done-by-switching-n-3-in-the-previous-code-block-but-bigrams-should-be-the-most-insightful-for-this-text.-finally-visualizing-the-network-of-bigrams-is-works-really-well-to-see-how-the-bigrams-connect-with-other-words-and-bigrams-in-the-text." class="section level2">
+<h2>Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, it is not suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should be the most insightful for this text. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text.</h2>
+<pre class="r"><code>bigram_tf_idf %&gt;% group_by(season_num) %&gt;% top_n(5) %&gt;% ungroup %&gt;% ggplot(aes(bigram, tf_idf, fill = as.factor(season_num))) +geom_col(show.legend =  FALSE) + labs(x = NULL, y =&quot;tf-idf&quot;) + facet_wrap(~season_num, ncol = 1, scales = &quot;free&quot;) + coord_flip()</code></pre>
+<pre><code>## Selecting by tf_idf</code></pre>
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-9-1.png" width="576" /></p>
+<pre class="r"><code>bigram_graph &lt;- gramcount %&gt;% filter(n &gt;= 10) %&gt;% graph_from_data_frame()
+set.seed(2016)
+x &lt;- grid::arrow(type = &quot;closed&quot;, length = unit(.15, &quot;inches&quot;))
+
+ggraph(bigram_graph, layout = &quot;fr&quot;) + geom_edge_link(aes(edge_alpha = n),
+  show.legend = FALSE, arrow = x, end_cap = circle(.07, &#39;inches&#39;)) +
+  geom_node_point(color = &quot;lightblue&quot;, size = 5) + geom_node_text(aes(label =name), vjust = 1, hjust = 1) + theme_void()</code></pre>
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-9-2.png" width="576" /> ## <strong>Summary</strong></p>
 </div>
 
     </div>
@@ -120,6 +221,9 @@
 
 
     
+<script src="/js/math-code.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
 
     
   </body>

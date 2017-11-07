@@ -19,8 +19,11 @@ library(ggraph)
 library(ggplot2) 
 ```
 
-## **Sentiment Analysis on Rick and Morty**:   
+## **Sentiment Analysis on Rick and Morty**:  
+  
 (WARNING: STRONG LANGUAGE APPEARS IN THIS TEXT ANALYSIS)  
+  
+  
 ### After reading *Text Mining with R*, I was trying to think of a project I could apply what I had learned. It wasn't until I came across this blog post by Tamas Szilagyi:  [A TIDY TEXT ANALYSIS OF RICK ANDMORTY](http://tamaszilagyi.com/blog/a-tidy-text-analysis-of-rick-and-morty/)  that my eyes were opened. 
   
 <div style="width:300px; height=200px">
@@ -76,7 +79,7 @@ ggplot(topwords2, aes(word, fill = (sentiment))) + geom_bar(show.legend = TRUE) 
 coord_flip() + facet_wrap(~season_num, scales = "free_y", nrow = 3) + labs(title
 = "By Season")
 ```  
-###One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. The show is known for rejecting any notion of the existence of a higher being, higher than Rick that is.  I was suprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: "Oh my god", which is not usually used as a positive sentiment. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later. For now, let's keep the focus of seeing how each season differs.  
+One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. The show is known for rejecting any notion of the existence of a higher being, higher than Rick that is.  I was suprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: "Oh my god", which is not usually used as a positive sentiment. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later. For now, let's keep the focus of seeing how each season differs.  
 <div style="width:300px; height=200px">  ![](d68.gif)  </div>  
 
 ### Number of times each character is mentioned per season:   
@@ -160,4 +163,4 @@ ggraph(bigram_graph, layout = "fr") + geom_edge_link(aes(edge_alpha = n),
   show.legend = FALSE, arrow = x, end_cap = circle(.07, 'inches')) +
   geom_node_point(color = "lightblue", size = 8) + geom_node_text(aes(label =name), vjust = 1, hjust = 1) + theme_void()
 ```  
-## **Summary**:  I had a lot of fun with this project. Being a fan of the show did help with this project in so many ways. For example, the issue with the term "god" being seen as a positive sentiment in the show when I knew it was not being used positively. Having an idea of what a graph should produce and getting something totally unexpected made me look deep into my code and find a problem I would never have known was there if I didn't know the show. If you're going to do a text analysis project, you should be passionate about both what you are analyzing and the process of analyzing. Thanks so much for taking the time to look at my project. I hope you found something interesting during your read.
+##**Summary:** I had a lot of fun with this project. Being a fan of the show did help with this project in so many ways. For example, the issue with the term "god" being seen as a positive sentiment in the show when I knew it was not being used positively. Having an idea of what a graph should produce and getting something totally unexpected made me look deep into my code and find a problem I would never have known was there if I didn't know the show. If you're going to do a text analysis project, you should be passionate about both what you are analyzing and the process of analyzing. Thanks so much for taking the time to look at my project. I hope you found something interesting during your read.

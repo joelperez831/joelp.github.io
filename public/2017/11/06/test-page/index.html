@@ -6,8 +6,8 @@
 <meta name="generator" content="Hugo 0.30.2" />
 
 
-<title>Test Page - A Hugo website</title>
-<meta property="og:title" content="Test Page - A Hugo website">
+<title>Sentiment Analysis on Rick and Morty - A Hugo website</title>
+<meta property="og:title" content="Sentiment Analysis on Rick and Morty - A Hugo website">
 
 
 
@@ -62,7 +62,7 @@
     <span class="article-duration">6 min read</span>
     
 
-    <h1 class="article-title">Test Page</h1>
+    <h1 class="article-title">Sentiment Analysis on Rick and Morty</h1>
 
     
     <span class="article-date">2017/11/06</span>
@@ -108,9 +108,8 @@
 <div id="number-of-times-each-character-is-mentioned-per-season" class="section level3">
 <h3>Number of times each character is mentioned per season:</h3>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-4-1.png" width="672" /> #### It’s not suprising that the most mentioned characters of Rick and Morty are Rick and Morty. However, we can see Morty was the real star of the first season. He was mentioned about twice as much as Rick and after the first season, he dropped all the way down. Justin Roiland, the voice of Rick and Morty, said he felt Rick saying “Morty” was a verbal crutch and wanted to try to get rid of it. As we can see by the graph, he really did follow through.</p>
-<div id="term-frequencies-are-a-large-part-in-text-mining.-so-lets-plot-the-top-20" class="section level4">
-<h4>Term frequencies are a large part in text mining. So, let’s plot the top 20</h4>
-<p>words per season and exclude main character names and common words.</p>
+<div id="term-frequencies-are-a-large-part-in-text-mining.-so-lets-plot-the-top-20-words-per-season-and-exclude-main-character-names-and-common-words." class="section level4">
+<h4>Term frequencies are a large part in text mining. So, let’s plot the top 20 words per season and exclude main character names and common words.</h4>
 <pre class="r"><code>
 episodeWords &lt;- df %&gt;% unnest_tokens(word, Text) %&gt;% anti_join(
 rbind(data.frame(word = c(&quot;xhmikosr&quot;, &quot;www.addic7ed.com&quot;, &quot;sync&quot;,
@@ -174,10 +173,7 @@ plays&quot;)  &amp; (bigram != &quot;suspenseful music&quot;) &amp;  (bigram != 
 randmSent[which(randmSent$word ==&quot;god&quot;),]$sentiment &lt;-&quot;negative&quot;
 ggplot(randmSent, aes(sentiment)) +geom_bar(fill = &quot;orange&quot;, color = &quot;black&quot;)</code></pre>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-7-1.png" width="672" /> #### Now we get a graph that Rick and Morty fans might find more accurate.</p>
-</div>
-</div>
-<div id="using-bigrams-again-we-can-see-the-most-used-pair-words-for-each-season.-if-you-have-watched-the-interdimensional-cable-episode-it-is-not-suprise-that-jan-michael-is-on-the-list.-pretty-good-looking-graph-using-bigrams.-if-we-wanted-to-look-at-pairs-of-three-words-this-could-easily-be-done-by-switching-n-3-in-the-previous-code-block-but-bigrams-should-be-the-most-insightful-for-this-text.-finally-visualizing-the-network-of-bigrams-is-works-really-well-to-see-how-the-bigrams-connect-with-other-words-and-bigrams-in-the-text." class="section level2">
-<h2>Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, it is not suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should be the most insightful for this text. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text.</h2>
+<p>Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, it is not suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should be the most insightful for this text. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text.</p>
 <pre class="r"><code>bigram_tf_idf %&gt;% group_by(season_num) %&gt;% top_n(5) %&gt;% ungroup %&gt;% ggplot(aes(bigram, tf_idf, fill = as.factor(season_num))) +geom_col(show.legend =  FALSE) + labs(x = NULL, y =&quot;tf-idf&quot;) + facet_wrap(~season_num, ncol = 1, scales = &quot;free&quot;) + coord_flip()
 ## Selecting by tf_idf</code></pre>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-8-1.png" width="576" /></p>
@@ -190,6 +186,7 @@ ggraph(bigram_graph, layout = &quot;fr&quot;) + geom_edge_link(aes(edge_alpha = 
   show.legend = FALSE, arrow = x, end_cap = circle(.07, &#39;inches&#39;)) +
   geom_node_point(color = &quot;lightblue&quot;, size = 5) + geom_node_text(aes(label =name), vjust = 1, hjust = 1) + theme_void()</code></pre>
 <p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-8-2.png" width="576" /> ## <strong>Summary</strong></p>
+</div>
 </div>
 
     </div>

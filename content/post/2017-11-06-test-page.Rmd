@@ -1,5 +1,5 @@
 ---
-title: Test Page
+title: Sentiment Analysis on Rick and Morty
 author: 'Joel Perez'
 date: '2017-11-06'
 slug: test-page
@@ -74,10 +74,10 @@ ggplot(topwords2, aes(word, fill = (sentiment))) + geom_bar(show.legend = TRUE) 
 coord_flip() + facet_wrap(~season_num, scales = "free_y", nrow = 3) + labs(title
 = "By Season")
 ```  
-#### One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. My hypothesis is that it depends on the context of how mother is being used. Another interesting find is that the most common word in each season is god. The show is known for questioning the existence of god, which I was suprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: "Oh my god", which is not usually a good thing. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later.  
-<div style="width:300px; height=200px">![](d68.gif)</div>  
+####  One thing to note is that mother is regarded as both negative and positive, hence why it is filled with two colors. My hypothesis is that it depends on the context of how mother is being used. Another interesting find is that the most common word in each season is god. The show is known for questioning the existence of god, which I was suprised to see how often the word god is actually mentioned. However, the context of how god is usually used as in a phrase like: "Oh my god", which is not usually a good thing. Nevertheless, this could be why the overall sentiment analysis of Rick and Morty might be a misrepresentation. Will look more into this later.  
+<div style="width:300px; height=200px">  ![](d68.gif)  </div>  
 
-###Number of times each character is mentioned per season:   
+### Number of times each character is mentioned per season:   
 ```{r,echo=FALSE,warning=FALSE, message=FALSE}
 mentions <- tidydf %>% filter(word == "beth" |word == "morty" | word == "jerry" | word == "rick" | word == "summer")
 ggplot(mentions, aes(word)) + geom_bar(aes(fill = word),show.legend = FALSE)+
@@ -85,10 +85,9 @@ facet_wrap(~season_num) + scale_fill_manual(values= alpha(c("red",
 "forestgreen", "yellow", "sky blue","violet"))) +  theme(axis.text.x =
 element_text(angle=90, vjust=1))
 ```  
-#### It's not suprising that the most mentioned characters of Rick and Morty are Rick and Morty. However, we can see Morty was the real star of the first season. He was mentioned about twice as much as Rick and after the first season, he dropped all the way down. Justin Roiland, the voice of Rick and Morty, said he felt Rick saying "Morty" was a verbal crutch and wanted to try to get rid of it. As we can see by the graph, he really did follow through.  
+####  It's not suprising that the most mentioned characters of Rick and Morty are Rick and Morty. However, we can see Morty was the real star of the first season. He was mentioned about twice as much as Rick and after the first season, he dropped all the way down. Justin Roiland, the voice of Rick and Morty, said he felt Rick saying "Morty" was a verbal crutch and wanted to try to get rid of it. As we can see by the graph, he really did follow through.  
 
-#### Term frequencies are a large part in text mining. So, let's plot the top 20
-words per season and exclude main character names and common words.  
+#### Term frequencies are a large part in text mining. So, let's plot the top 20 words per season and exclude main character names and common words.    
 ```{r, warning=FALSE, message=FALSE ,fig.width= 6, fig.height=10}
 
 episodeWords <- df %>% unnest_tokens(word, Text) %>% anti_join(
@@ -102,8 +101,8 @@ plotWords <- episodeWords %>% arrange(desc(tf_idf)) %>% mutate(word =factor(word
 plotWords %>% top_n(20) %>% ggplot(aes(word, tf_idf, fill = as.factor(season_num))) + geom_col() + labs(x=
 NULL, y = "tf-idf") + coord_flip() 
 
-```  
-We can see from that the top positions for each season are: meeseeks, unity and pickle, which, if you watch Rick and Morty, is not so suprising. One thing I loved is the word "noob" made the list. Again, if you watch Rick and Morty, you know there is a character called, "Noob Noob", who is one of my favorite temporary side characters on the show.  
+```    
+  We can see from that the top positions for each season are: meeseeks, unity and pickle, which, if you watch Rick and Morty, is not so suprising. One thing I loved is the word "noob" made the list. Again, if you watch Rick and Morty, you know there is a character called, "Noob Noob", who is one of my favorite temporary side characters on the show.  
 
 ##Now we go to another imortant topic in text mining, N-Grams.  
 ```{r,warning=FALSE, fig.width= 6, fig.height=10}
@@ -132,11 +131,11 @@ plays")  & (bigram != "suspenseful music") &  (bigram != "speaking alien languag
 randmSent <- tidydf %>% inner_join(nrcSent)
 randmSent[which(randmSent$word =="god"),]$sentiment <-"negative"
 ggplot(randmSent, aes(sentiment)) +geom_bar(fill = "orange", color = "black")
-```  
+```   
 #### Now we get a graph that Rick and Morty fans might find more accurate.  
   
   
-##Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, it is not suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should be the most insightful for this text. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text. 
+ Using bigrams again, we can see the most used pair words for each season. If you have watched the Interdimensional Cable episode, it is not suprise that Jan Michael is on the list. Pretty good looking graph using bigrams. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should be the most insightful for this text. Finally, visualizing the network of bigrams is works really well to see how the bigrams connect with other words and bigrams in the text. 
 
 ```{r, fig.width= 6, fig.height=10 } 
 bigram_tf_idf %>% group_by(season_num) %>% top_n(5) %>% ungroup %>% ggplot(aes(bigram, tf_idf, fill = as.factor(season_num))) +geom_col(show.legend =  FALSE) + labs(x = NULL, y ="tf-idf") + facet_wrap(~season_num, ncol = 1, scales = "free") + coord_flip()

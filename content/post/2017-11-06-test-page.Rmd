@@ -117,9 +117,9 @@ plotWords %>% group_by(season_num) %>% top_n(15) %>% ungroup %>%
 ggplot(aes(word, tf_idf, fill = as.factor(season_num))) + geom_col(show.legend =
 FALSE) + labs(x = NULL, y = "tf-idf") + facet_wrap(~season_num, ncol = 1, scales
 = "free") + coord_flip()
-```   
- 
- Now we go to another important topic in text mining, N-Grams.  
+```  
+   
+   Now we go to another important topic in text mining, N-Grams.  
  
    
   

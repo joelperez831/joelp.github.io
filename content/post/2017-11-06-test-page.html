@@ -101,7 +101,8 @@ FALSE) + labs(x = NULL, y = &quot;tf-idf&quot;) + facet_wrap(~season_num, ncol =
 = &quot;free&quot;) + coord_flip()
 
 ## Selecting by tf_idf</code></pre>
-<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-7-1.png" width="576" /> Now we go to another important topic in text mining, N-Grams.</p>
+<p><img src="/post/2017-11-06-test-page_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+<p>Now we go to another important topic in text mining, N-Grams.</p>
 <p>N-grams allow us to look at the relationship between words in text. We will use bigrams, they’re called bigrams because we set N=2, which means we are looking at only pairs of words at a time. If we wanted to look at pairs of three words, this could easily be done by switching n = 3, in the previous code block, but bigrams should work best. Using bigrams, we can see what words follow specific words. This is how we can approach the problem with the word “god” from the sentiment.</p>
 <pre><code>episodeGrams &lt;- df %&gt;% unnest_tokens(bigram, Text, token = &quot;ngrams&quot;, n = 2)
 episodeGrams &lt;- episodeGrams %&gt;% filter((bigram != &quot;xhmikosr wwwaddic7edcom&quot;) &amp;

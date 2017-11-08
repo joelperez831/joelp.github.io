@@ -2,7 +2,7 @@
 title: Sentiment Analysis on Rick and Morty
 author: 'Joel Perez'
 date: '2017-11-06'
-slug: test-page
+slug: Rick-And-Morty
 categories: ["R"]
 tags: []
 ---

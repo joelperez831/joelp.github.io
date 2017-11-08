@@ -1,7 +1,7 @@
 ---
 title: "About"
 
----
+---  
 <br />
 
  &nbsp;&nbsp;&nbsp;&nbsp; My name is Joel Perez. I am currently a UCLA student majoring in statistics. I grew up in the "Salad Bowl of California", the Central Coast a.k.a. the most overlooked part of California. I was surrounded by nothing but fields. I'd have to walk by the fields and the field workers everyday to get to high school. It served as a constant reminder of the work ethic of my culture. It was an inspiration. However, I did not have no intention of going to college after high school, but after awhile, my dad finally convinced me to go to try community college, where I discovered my love for mathematics and programming.  

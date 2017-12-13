@@ -6,6 +6,7 @@ googleAnalytics = ""
 disqusShortname = ""
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
+
 [permalinks]
     post = "/:year/:month/:day/:slug/"
 
@@ -18,9 +19,10 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 [[menu.main]]
     name = "LinkedIn"
     url = "https://www.linkedin.com/in/joel-perez-808046147/"
-
+ 
 [params]
     description = "A website built through Hugo and blogdown."
+    <div style="line-height:16px;text-align:center;"><a href="https://www.tracemyip.org/tools/cookie-free-tracking-analytics-eu-cookie-law-solution/" ><img src="//s2.tracemyip.org/tracker/1202/4684NR-IPIB/81837/2/njsUrl/" alt="cookieless tracking" style="border:0px;"></a></div>
 
     # options for highlight.js (version, additional languages, and theme)
     highlightjsVersion = "9.11.0"

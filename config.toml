@@ -4,10 +4,12 @@ title = "Joey's Data Blog"
 theme = "hugo-lithium-theme"
 googleAnalytics = ""
 disqusShortname = ""
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
 
 
 [permalinks]
     post = "/:year/:month/:day/:slug/"
+    
 
 [[menu.main]]
     name = "About"

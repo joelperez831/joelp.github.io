@@ -7,7 +7,7 @@ disqusShortname = ""
 
 
 [permalinks]
-    post = "/:year/:month/:day/:slug/"
+    post = "/:year/:month/:day/:title/"
     page = "/:title/"
 
 [[menu.main]]

@@ -29,7 +29,7 @@ library(ggplot2)
 </div>
   
 ### As a huge Rick and Morty fan, the idea of combining text analysis and my favorite show was perfect. I did my best to make this project my own. I looked online for the subtitles and began cleaning up the text. I started with looking at the overall sentiment of the show. The sentiment we use by cross checking words that have a certain tone to them. By analyzing the most frequent types of negative and positive words used, we can get an idea of how the tone of the show itself might be.  
-```{r, warning=FALSE, message=FALSE,fig.width=7, fig.height=5}
+```{r, warning=FALSE, message=FALSE}
 
 a <- read.subtitles.serie(dir = "C:/Users/Joey/Desktop/randm/series/")
 df <- subDataFrame(a) 

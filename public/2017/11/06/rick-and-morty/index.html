@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Hugo 0.30.2" />
+<meta name="generator" content="Hugo 0.36" />
 
 
 <title>Sentiment Analysis on Rick and Morty - Joey&#39;s Data Blog</title>
@@ -111,19 +111,19 @@ ggplot(randmSent, aes(sentiment)) + geom_bar(fill = &quot;orange&quot;, color = 
 
 ## # A tibble: 1,471 x 10
 ## # Groups:   season_num [?]
-##       ID  Timecode.in Timecode.out         season season_num episode_num
-##    &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;          &lt;chr&gt;      &lt;dbl&gt;       &lt;dbl&gt;
-##  1    15 00:00:34.320 00:00:36.680 rick-and-morty          1           1
-##  2    48 00:01:33.790 00:01:34.724 rick-and-morty          1           1
-##  3    57 00:01:49.720 00:01:50.625 rick-and-morty          1           1
-##  4    69 00:02:45.220 00:02:46.995 rick-and-morty          1           1
-##  5    82 00:03:09.650 00:03:10.465 rick-and-morty          1           1
-##  6    84 00:03:12.050 00:03:14.789 rick-and-morty          1           1
-##  7    92 00:03:29.349 00:03:30.724 rick-and-morty          1           1
-##  8   104 00:03:56.889 00:03:58.724 rick-and-morty          1           1
-##  9   104 00:03:56.889 00:03:58.724 rick-and-morty          1           1
-## 10   106 00:03:59.949 00:04:02.794 rick-and-morty          1           1
-## # ... with 1,461 more rows, and 4 more variables: serie &lt;chr&gt;, word &lt;chr&gt;,
+##    ID    Timecode.in  Timecode.out season     season_num episode_num serie
+##    &lt;chr&gt; &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;           &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;
+##  1 15    00:00:34.320 00:00:36.680 rick-and-~       1.00        1.00 seri~
+##  2 48    00:01:33.790 00:01:34.724 rick-and-~       1.00        1.00 seri~
+##  3 57    00:01:49.720 00:01:50.625 rick-and-~       1.00        1.00 seri~
+##  4 69    00:02:45.220 00:02:46.995 rick-and-~       1.00        1.00 seri~
+##  5 82    00:03:09.650 00:03:10.465 rick-and-~       1.00        1.00 seri~
+##  6 84    00:03:12.050 00:03:14.789 rick-and-~       1.00        1.00 seri~
+##  7 92    00:03:29.349 00:03:30.724 rick-and-~       1.00        1.00 seri~
+##  8 104   00:03:56.889 00:03:58.724 rick-and-~       1.00        1.00 seri~
+##  9 104   00:03:56.889 00:03:58.724 rick-and-~       1.00        1.00 seri~
+## 10 106   00:03:59.949 00:04:02.794 rick-and-~       1.00        1.00 seri~
+## # ... with 1,461 more rows, and 3 more variables: word &lt;chr&gt;,
 ## #   sentiment &lt;chr&gt;, n &lt;int&gt;</code></pre>
 </div>
 </div>
@@ -180,12 +180,12 @@ episodeGramsSeperate %&gt;% filter(word1 ==&quot;god&quot;) %&gt;% count(word2, 
 ## # A tibble: 6 x 2
 ##   word2     n
 ##   &lt;chr&gt; &lt;int&gt;
-## 1  damn    24
-## 2    oh    15
-## 3     i    12
-## 4    is     6
+## 1 damn     24
+## 2 oh       15
+## 3 i        12
+## 4 is        6
 ## 5 morty     5
-## 6  what     5
+## 6 what      5
 
 episodeGramsSeperate %&gt;% filter(word2 ==&quot;god&quot;) %&gt;% count(word1, sort =TRUE) %&gt;% top_n(5) 
 
@@ -194,11 +194,11 @@ episodeGramsSeperate %&gt;% filter(word2 ==&quot;god&quot;) %&gt;% count(word1, 
 ## # A tibble: 5 x 2
 ##   word1     n
 ##   &lt;chr&gt; &lt;int&gt;
-## 1    my   132
-## 2    oh    49
+## 1 my      132
+## 2 oh       49
 ## 3 thank     7
-## 4    of     5
-## 5     a     4
+## 4 of        5
+## 5 a         4
 
 bigram_tf_idf &lt;- gramcountUnited %&gt;% filter((bigram != &quot;xhmikosrwwwaddic7edcom&quot;) &amp; (bigram != &quot;suspenseful music plays&quot;) &amp; (bigram != &quot;music
 plays&quot;)  &amp; (bigram != &quot;suspenseful music&quot;) &amp;  (bigram != &quot;speaking alien language&quot;) &amp; (bigram != &quot;laughter&quot;)) %&gt;% count(season_num, bigram) %&gt;% bind_tf_idf(bigram, season_num, n)%&gt;% arrange(desc(tf_idf))  </code></pre>

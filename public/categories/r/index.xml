@@ -13,10 +13,10 @@
     
     <item>
       <title>Sentiment Analysis on Rick and Morty</title>
-      <link>/2017/11/06/sentiment-analysis-on-rick-and-morty/</link>
+      <link>/2017/11/06/rick-and-morty/</link>
       <pubDate>Mon, 06 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>/2017/11/06/sentiment-analysis-on-rick-and-morty/</guid>
+      <guid>/2017/11/06/rick-and-morty/</guid>
       <description>Sentiment Analysis on Rick and Morty: (WARNING: STRONG LANGUAGE APPEARS IN THIS TEXT ANALYSIS)After reading Text Mining with R, I was trying to think of a project I could apply what I had learned. It wasn’t until I came across this blog post by Tamas Szilagyi: A TIDY TEXT ANALYSIS OF RICK AND MORTY that my eyes were opened.As a huge Rick and Morty fan, the idea of combining text analysis and my favorite show was perfect.</description>
     </item>
     

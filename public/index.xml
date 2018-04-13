@@ -6,17 +6,27 @@
     <description>Recent content on Joey&#39;s Data Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 06 Nov 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 12 Apr 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
+      <title>Kaggle 5 Day Challenge: Day 1</title>
+      <link>/2018/</link>
+      <pubDate>Thu, 12 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/</guid>
+      <description>Day 3: Parsing Dates 
+Welcome to day 3 of the 5-Day Data Challenge! Today, we&amp;rsquo;re going to work with dates. import pandas as pd import numpy as np import seaborn as sns import datetime # read in the data earthquakes = pd.read_csv(&amp;quot;earthquake_database.csv&amp;quot;) landslides = pd.read_csv(&amp;quot;catalog.csv&amp;quot;) volcanos = pd.read_csv(&amp;quot;volcano_database.csv&amp;quot;) #set seed for reproducibility np.random.seed(0)  Check the data type of our date column For this part of the challenge, I&amp;rsquo;ll be working with the date column from the landslides dataframe.</description>
+    </item>
+    
+    <item>
       <title>Sentiment Analysis on Rick and Morty</title>
-      <link>/2017/11/06/rick-and-morty/</link>
+      <link>/2017/</link>
       <pubDate>Mon, 06 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>/2017/11/06/rick-and-morty/</guid>
+      <guid>/2017/</guid>
       <description>Sentiment Analysis on Rick and Morty: (WARNING: STRONG LANGUAGE APPEARS IN THIS TEXT ANALYSIS)After reading Text Mining with R, I was trying to think of a project I could apply what I had learned. It wasn’t until I came across this blog post by Tamas Szilagyi: A TIDY TEXT ANALYSIS OF RICK AND MORTY that my eyes were opened.As a huge Rick and Morty fan, the idea of combining text analysis and my favorite show was perfect.</description>
     </item>
     
@@ -31,21 +41,11 @@
     
     <item>
       <title></title>
-      <link>/1/01/01/</link>
+      <link>/1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/1/01/01/</guid>
+      <guid>/1/</guid>
       <description>Kaggle 5 Day Challenge: Day 1code{white-space: pre;}pre:not([class]) {background-color: white;}if (window.hljs) {hljs.configure({languages: []});hljs.initHighlightingOnLoad();if (document.readyState &amp;&amp; document.readyState === &#34;complete&#34;) {window.setTimeout(function() { hljs.initHighlighting(); }, 0);}}h1 {font-size: 34px;}h1.title {font-size: 38px;}h2 {font-size: 30px;}h3 {font-size: 24px;}h4 {font-size: 18px;}h5 {font-size: 16px;}h6 {font-size: 12px;}.</description>
-    </item>
-    
-    <item>
-      <title>Kaggle 5 Day Challenge: Day 1</title>
-      <link>/1/01/01/kaggle-5-day-challenge-day-1/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/1/01/01/kaggle-5-day-challenge-day-1/</guid>
-      <description>Day 3: Parsing Dates 
-Welcome to day 3 of the 5-Day Data Challenge! Today, we&amp;rsquo;re going to work with dates. import pandas as pd import numpy as np import seaborn as sns import datetime # read in the data earthquakes = pd.read_csv(&amp;quot;earthquake_database.csv&amp;quot;) landslides = pd.read_csv(&amp;quot;catalog.csv&amp;quot;) volcanos = pd.read_csv(&amp;quot;volcano_database.csv&amp;quot;) #set seed for reproducibility np.random.seed(0)  Check the data type of our date column For this part of the challenge, I&amp;rsquo;ll be working with the date column from the landslides dataframe.</description>
     </item>
     
   </channel>

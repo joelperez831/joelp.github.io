@@ -1,7 +1,7 @@
 ---
 title: 'Kaggle 5 Day Challenge: Day 1'
 author: 
-date: ''
+date: '2018-04-12'
 slug: kaggle-5-day-challenge-day-1
 categories: []
 tags: []

@@ -7,7 +7,6 @@ categories: []
 tags: []
 ---
 
-
 # Day 3: Parsing Dates
 <br>
 <br>
@@ -197,7 +196,7 @@ sns.distplot(day_of_month_earthquakes, kde=False, bins = 31)
 
 
 
-<img src="C:/Users/Joey/Downloads/kaggle_clean/day3/image1.png" />
+![](C:\Users\Joey\Documents\New folder\joelp.github.io\static\post\img\image1.png)
 
 This graph looks good and the limits of the x-axis do make sense. Looks like we parsed the dates correctly.
 <br>

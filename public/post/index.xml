@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Joey&#39;s Data Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 06 Nov 2017 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 14 Apr 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Kaggle 5-Day Data Cleaning Challenge: Day 1(Missing Values)</title>
+      <link>/2018/04/14/kaggle-5-day-data-cleaning-challenge-day-1-missing-values/</link>
+      <pubDate>Sat, 14 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/04/14/kaggle-5-day-data-cleaning-challenge-day-1-missing-values/</guid>
+      <description>Day 1 of the 5-Day Kaggle Data Challenge import pandas as pd import numpy as np #read in data nfl_data = pd.read_csv(&amp;quot;NFL Play by Play 2009-2017 (v4).csv&amp;quot;) sf_permits = pd.read_csv(&amp;quot;Building_Permits.csv&amp;quot;) #set seed for reproducibility np.random.seed(0)  C:\Users\Joey\Anaconda3\lib\site-packages\IPython\core\interactiveshell.py:2717: DtypeWarning: Columns (25,51) have mixed types. Specify dtype option on import or set low_memory=False. interactivity=interactivity, compiler=compiler, result=result) C:\Users\Joey\Anaconda3\lib\site-packages\IPython\core\interactiveshell.py:2717: DtypeWarning: Columns (22,32) have mixed types. Specify dtype option on import or set low_memory=False. interactivity=interactivity, compiler=compiler, result=result)  # look at a sample of 5 rows in the sf_permits file.</description>
+    </item>
     
     <item>
       <title>Sentiment Analysis on Rick and Morty</title>

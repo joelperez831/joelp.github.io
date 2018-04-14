@@ -191,15 +191,9 @@ sns.distplot(day_of_month_earthquakes, kde=False, bins = 31)
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x142ebbe0>
-
-
-
-
-![](C:\Users\Joey\Documents\New folder\joelp.github.io\static\post\img\image1.png)
 
 <div class="figure">
-<img src="C:/Users/Joey/Documents/New folder/joelp.github.io/static/post/img/image1.png" />
+<img src="C:/Users/Joey/Documents/New folder/joelp.github.io/static/post/kaggle-5-day-challenge-day-1/image1.png" />
 
 </div>
 

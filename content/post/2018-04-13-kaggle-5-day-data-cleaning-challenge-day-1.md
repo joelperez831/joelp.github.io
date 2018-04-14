@@ -193,14 +193,7 @@ sns.distplot(day_of_month_earthquakes, kde=False, bins = 31)
 
     <matplotlib.axes._subplots.AxesSubplot at 0x142ebbe0>
 
-<a class="image-popup-no-margins boxed_shadow" href="" target="_self">
-    <img src="C:\Users\Joey\Documents\New folder\joelp.github.io\public\images\image1.png" class=" vc_box_border_grey attachment-full" alt="layout" data-lazy-loaded="true" style="display: inline;"><noscript>&lt;img src="C:\Users\Joey\Documents\New folder\joelp.github.io\public\images\image1.png" class=" vc_box_border_grey attachment-full" alt="layout" /&gt;</noscript>
-</a>
-
-<a class = "image-popup-no-margins boxed_shadow"
-<img src="/joelp.github.io/public/images/image1.png" />
-
-</div>
+![](C:\Users\Joey\Documents\New folder\joelp.github.io\static\post\2018-04-13-kaggle-5-day-data-cleaning-challenge-day-1_files\figure-html\image1.png)
 
 
 This graph looks good and the limits of the x-axis do make sense. Looks like we parsed the dates correctly.

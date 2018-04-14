@@ -195,7 +195,10 @@ sns.distplot(day_of_month_earthquakes, kde=False, bins = 31)
 
 
 
+<div class="figure">
+<img src="C:\Users\Joey\Downloads\kaggle_clean\day3\image1.png" />
 
+</div>
 
 
 This graph looks good and the limits of the x-axis do make sense. Looks like we parsed the dates correctly.

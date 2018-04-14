@@ -317,7 +317,7 @@ print(columns_to_drop.shape)
 
 
 
-<div>
+<div class = "scrollit">
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">

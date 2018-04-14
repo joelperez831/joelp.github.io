@@ -195,9 +195,8 @@ sns.distplot(day_of_month_earthquakes, kde=False, bins = 31)
 
 
 
-![png](C:\Users\Joey\Documents\New folder\joelp.github.io\public\2018\04\13\kaggle-5-day-data-cleaning-challenge-day-1\image1.png)
 <div style="width:300px; height=200px">
-![](C:\Users\Joey\Documents\New folder\joelp.github.io\public\2018\04\13\kaggle-5-day-data-cleaning-challenge-day-1\image1.png)
+![](C:\\Users\\Joey\\Documents\\New folder\\joelp.github.io\\public\\2018\\04\\13\\kaggle-5-day-data-cleaning-challenge-day-1\\image1.png)
 </div>
 
 

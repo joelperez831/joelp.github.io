@@ -39,159 +39,169 @@ sf_permits.sample(5)
 
 
 
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Permit Number</th>
-      <th>Permit Type</th>
-      <th>Permit Type Definition</th>
-      <th>Permit Creation Date</th>
-      <th>Block</th>
-      <th>Lot</th>
-      <th>Street Number</th>
-      <th>Street Number Suffix</th>
-      <th>Street Name</th>
-      <th>Street Suffix</th>
-      <th>...</th>
-      <th>Existing Construction Type</th>
-      <th>Existing Construction Type Description</th>
-      <th>Proposed Construction Type</th>
-      <th>Proposed Construction Type Description</th>
-      <th>Site Permit</th>
-      <th>Supervisor District</th>
-      <th>Neighborhoods - Analysis Boundaries</th>
-      <th>Zipcode</th>
-      <th>Location</th>
-      <th>Record ID</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>40553</th>
-      <td>201403039652</td>
-      <td>8</td>
-      <td>otc alterations permit</td>
-      <td>03/03/2014</td>
-      <td>3732</td>
-      <td>008</td>
-      <td>400</td>
-      <td>NaN</td>
-      <td>Clementina</td>
-      <td>St</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>1.0</td>
-      <td>constr type 1</td>
-      <td>NaN</td>
-      <td>6.0</td>
-      <td>South of Market</td>
-      <td>94103.0</td>
-      <td>(37.780460571778164, -122.40450626524974)</td>
-      <td>1334094491645</td>
-    </tr>
-    <tr>
-      <th>169731</th>
-      <td>201510159735</td>
-      <td>3</td>
-      <td>additions alterations or repairs</td>
-      <td>10/15/2015</td>
-      <td>2609</td>
-      <td>028</td>
-      <td>79</td>
-      <td>NaN</td>
-      <td>Buena Vista</td>
-      <td>Tr</td>
-      <td>...</td>
-      <td>5.0</td>
-      <td>wood frame (5)</td>
-      <td>5.0</td>
-      <td>wood frame (5)</td>
-      <td>NaN</td>
-      <td>8.0</td>
-      <td>Castro/Upper Market</td>
-      <td>94117.0</td>
-      <td>(37.76757916496494, -122.43793170417105)</td>
-      <td>1399356139170</td>
-    </tr>
-    <tr>
-      <th>19180</th>
-      <td>M409787</td>
-      <td>8</td>
-      <td>otc alterations permit</td>
-      <td>07/22/2013</td>
-      <td>4624</td>
-      <td>031</td>
-      <td>178</td>
-      <td>NaN</td>
-      <td>West Point</td>
-      <td>Rd</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>10.0</td>
-      <td>Bayview Hunters Point</td>
-      <td>94124.0</td>
-      <td>(37.73524725436046, -122.38063828309745)</td>
-      <td>1311685491725</td>
-    </tr>
-    <tr>
-      <th>68047</th>
-      <td>201411191888</td>
-      <td>8</td>
-      <td>otc alterations permit</td>
-      <td>11/19/2014</td>
-      <td>0039</td>
-      <td>109</td>
-      <td>294</td>
-      <td>NaN</td>
-      <td>Francisco</td>
-      <td>St</td>
-      <td>...</td>
-      <td>5.0</td>
-      <td>wood frame (5)</td>
-      <td>5.0</td>
-      <td>wood frame (5)</td>
-      <td>NaN</td>
-      <td>3.0</td>
-      <td>North Beach</td>
-      <td>94133.0</td>
-      <td>(37.805257822817126, -122.40998545760392)</td>
-      <td>1362881288870</td>
-    </tr>
-    <tr>
-      <th>64238</th>
-      <td>M527228</td>
-      <td>8</td>
-      <td>otc alterations permit</td>
-      <td>10/14/2014</td>
-      <td>1251</td>
-      <td>002</td>
-      <td>707</td>
-      <td>NaN</td>
-      <td>Cole</td>
-      <td>St</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>5.0</td>
-      <td>Haight Ashbury</td>
-      <td>94117.0</td>
-      <td>(37.76836885973765, -122.45074431487859)</td>
-      <td>135886493776</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 43 columns</p>
-</div>
+
+<div class = "output_wrapper">
+  <div class = "output">
+    <div class = "output_area">
+      <div class = "prompt output_prompt">Out[47]:</div>
+        <div class = "output_html rendered_html output_subarea output_execute_result">
+          <div>
+            <table border="1" class="dataframe">
+              <thead>
+                <tr style="text-align: right;">
+                  <th></th>
+                  <th>Permit Number</th>
+                  <th>Permit Type</th>
+                  <th>Permit Type Definition</th>
+                  <th>Permit Creation Date</th>
+                  <th>Block</th>
+                  <th>Lot</th>
+                  <th>Street Number</th>
+                  <th>Street Number Suffix</th>
+                  <th>Street Name</th>
+                  <th>Street Suffix</th>
+                  <th>...</th>
+                  <th>Existing Construction Type</th>
+                  <th>Existing Construction Type Description</th>
+                  <th>Proposed Construction Type</th>
+                  <th>Proposed Construction Type Description</th>
+                  <th>Site Permit</th>
+                  <th>Supervisor District</th>
+                  <th>Neighborhoods - Analysis Boundaries</th>
+                  <th>Zipcode</th>
+                  <th>Location</th>
+                  <th>Record ID</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>40553</th>
+                  <td>201403039652</td>
+                  <td>8</td>
+                  <td>otc alterations permit</td>
+                  <td>03/03/2014</td>
+                  <td>3732</td>
+                  <td>008</td>
+                  <td>400</td>
+                  <td>NaN</td>
+                  <td>Clementina</td>
+                  <td>St</td>
+                  <td>...</td>
+                  <td>NaN</td>
+                  <td>NaN</td>
+                  <td>1.0</td>
+                  <td>constr type 1</td>
+                  <td>NaN</td>
+                  <td>6.0</td>
+                  <td>South of Market</td>
+                  <td>94103.0</td>
+                  <td>(37.780460571778164, -122.40450626524974)</td>
+                  <td>1334094491645</td>
+                </tr>
+                <tr>
+                  <th>169731</th>
+                  <td>201510159735</td>
+                  <td>3</td>
+                  <td>additions alterations or repairs</td>
+                  <td>10/15/2015</td>
+                  <td>2609</td>
+                  <td>028</td>
+                  <td>79</td>
+                  <td>NaN</td>
+                  <td>Buena Vista</td>
+                  <td>Tr</td>
+                  <td>...</td>
+                  <td>5.0</td>
+                  <td>wood frame (5)</td>
+                  <td>5.0</td>
+                  <td>wood frame (5)</td>
+                  <td>NaN</td>
+                  <td>8.0</td>
+                  <td>Castro/Upper Market</td>
+                  <td>94117.0</td>
+                  <td>(37.76757916496494, -122.43793170417105)</td>
+                  <td>1399356139170</td>
+                </tr>
+                <tr>
+                  <th>19180</th>
+                  <td>M409787</td>
+                  <td>8</td>
+                  <td>otc alterations permit</td>
+                  <td>07/22/2013</td>
+                  <td>4624</td>
+                  <td>031</td>
+                  <td>178</td>
+                  <td>NaN</td>
+                  <td>West Point</td>
+                  <td>Rd</td>
+                  <td>...</td>
+                  <td>NaN</td>
+                  <td>NaN</td>
+                  <td>NaN</td>
+                  <td>NaN</td>
+                  <td>NaN</td>
+                  <td>10.0</td>
+                  <td>Bayview Hunters Point</td>
+                  <td>94124.0</td>
+                  <td>(37.73524725436046, -122.38063828309745)</td>
+                  <td>1311685491725</td>
+                </tr>
+                <tr>
+                  <th>68047</th>
+                  <td>201411191888</td>
+                  <td>8</td>
+                  <td>otc alterations permit</td>
+                  <td>11/19/2014</td>
+                  <td>0039</td>
+                  <td>109</td>
+                  <td>294</td>
+                  <td>NaN</td>
+                  <td>Francisco</td>
+                  <td>St</td>
+                  <td>...</td>
+                  <td>5.0</td>
+                  <td>wood frame (5)</td>
+                  <td>5.0</td>
+                  <td>wood frame (5)</td>
+                  <td>NaN</td>
+                  <td>3.0</td>
+                  <td>North Beach</td>
+                  <td>94133.0</td>
+                  <td>(37.805257822817126, -122.40998545760392)</td>
+                  <td>1362881288870</td>
+                </tr>
+                <tr>
+                  <th>64238</th>
+                  <td>M527228</td>
+                  <td>8</td>
+                  <td>otc alterations permit</td>
+                  <td>10/14/2014</td>
+                  <td>1251</td>
+                  <td>002</td>
+                  <td>707</td>
+                  <td>NaN</td>
+                  <td>Cole</td>
+                  <td>St</td>
+                  <td>...</td>
+                  <td>NaN</td>
+                  <td>NaN</td>
+                  <td>NaN</td>
+                  <td>NaN</td>
+                  <td>NaN</td>
+                  <td>5.0</td>
+                  <td>Haight Ashbury</td>
+                  <td>94117.0</td>
+                  <td>(37.76836885973765, -122.45074431487859)</td>
+                  <td>135886493776</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>5 rows × 43 columns</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 

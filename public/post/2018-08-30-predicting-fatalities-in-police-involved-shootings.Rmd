@@ -1,0 +1,576 @@
+---
+title: Predicting Fatalities in Police-involved Shootings
+author: ''
+date: '2018-08-30'
+slug: predicting-fatalities-in-police-involved-shootings
+categories: []
+tags: []
+---
+
+
+
+```{r}
+police_shootings <- read.csv("~/Downloads/train.csv",stringsAsFactors = FALSE)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(tidytext)
+library(lubridate)
+library(randomForest)
+str(police_shootings)
+
+
+set.seed(135)
+
+
+# First looking into the data
+table(police_shootings$NumberOfSubjects)
+
+
+table(police_shootings$Fatal)
+
+
+
+table(police_shootings$SubjectArmed)
+
+table(police_shootings$SubjectRace)
+
+## Mostly males 
+table(police_shootings$SubjectGender)
+
+ggplot(police_shootings, aes(NumberOfOfficers)) + geom_histogram()
+
+# One observation with 0 officers, at least one officer must be involved in an officer involved shooting, so change Number of officers to 1
+
+police_shootings[which(police_shootings$NumberOfOfficers == 0), ]$NumberOfOfficers <- 1
+
+# Clean up officer gender
+police_shootings[which(police_shootings$OfficerGender == "FEMALE"),]$OfficerGender <- "F"
+police_shootings[which(police_shootings$OfficerGender == "MALE"),]$OfficerGender <- "M"
+police_shootings[which(police_shootings$OfficerGender == "MALE;MALE"),]$OfficerGender <- "M;M"
+police_shootings[which(police_shootings$OfficerGender == "MALE;FEMALE;MALE"),]$OfficerGender <- "M;F;M"
+police_shootings[str_detect(police_shootings$OfficerGender, "U"),]$OfficerGender <- "U"
+
+
+genderFunction <- function(x){
+  
+  if(str_detect(x,"U") == FALSE){
+    amountMalesPresent <- str_count(x,"M")
+    amountFemalesPresent <- str_count(x,"F")
+    return(paste("Females:",amountFemalesPresent,"Males: ", amountMalesPresent,sep = " "))
+  }
+  return("U")
+  
+}
+
+
+
+
+table(police_shootings$OfficerGender)
+
+# seperate age into intervals
+table(police_shootings$SubjectAge)
+
+myFunction <- function(police_shootings){
+
+police_shootings$SubjectAge[which(police_shootings$SubjectAge == "UNKNOWN")] <- "U"
+police_shootings$SubjectAge[which(police_shootings$SubjectAge == "Juvenile")] <- "0-19"
+police_shootings$SubjectAge[which(police_shootings$SubjectAge == "N/A")] <- "U"
+police_shootings$SubjectAge[which(police_shootings$SubjectAge == "4.0")] <- "U"
+police_shootings$SubjectAge[which(police_shootings$SubjectAge == "12.0"| police_shootings$SubjectAge == "13.0"|police_shootings$SubjectAge == "14.0" |police_shootings$SubjectAge == "15.0" | police_shootings$SubjectAge == "16.0"|police_shootings$SubjectAge == "17.0"|police_shootings$SubjectAge == "18.0"|police_shootings$SubjectAge == "19.0")] <- "0-19"
+police_shootings$SubjectAge[which(police_shootings$SubjectAge == "20.0"| police_shootings$SubjectAge == "21.0"|police_shootings$SubjectAge == "22.0" |police_shootings$SubjectAge == "23.0" | police_shootings$SubjectAge == "24.0"|police_shootings$SubjectAge == "25.0"|police_shootings$SubjectAge == "26.0"|police_shootings$SubjectAge == "27.0"|police_shootings$SubjectAge == "28.0"|police_shootings$SubjectAge == "29.0")] <- "20-29"
+police_shootings$SubjectAge[which(police_shootings$SubjectAge == "21-23")] <- "20-29"
+police_shootings$SubjectAge[which(police_shootings$SubjectAge == "30.0"| police_shootings$SubjectAge == "31.0"|police_shootings$SubjectAge == "32.0" |police_shootings$SubjectAge == "33.0" | police_shootings$SubjectAge == "34.0"|police_shootings$SubjectAge == "35.0"|police_shootings$SubjectAge == "36.0"|police_shootings$SubjectAge == "37.0"|police_shootings$SubjectAge == "38.0"|police_shootings$SubjectAge == "39.0")] <- "30-39"
+police_shootings$SubjectAge[which(police_shootings$SubjectAge == "40.0"| police_shootings$SubjectAge == "41.0"|police_shootings$SubjectAge == "42.0" |police_shootings$SubjectAge == "43.0" | police_shootings$SubjectAge == "44.0"|police_shootings$SubjectAge == "45.0"|police_shootings$SubjectAge == "46.0"|police_shootings$SubjectAge == "47.0"|police_shootings$SubjectAge == "48.0"|police_shootings$SubjectAge == "49.0")] <- "40-49"
+police_shootings$SubjectAge[which(police_shootings$SubjectAge == "50.0"| police_shootings$SubjectAge == "51.0"|police_shootings$SubjectAge == "52.0" |police_shootings$SubjectAge == "53.0" | police_shootings$SubjectAge == "54.0"|police_shootings$SubjectAge == "55.0"|police_shootings$SubjectAge == "56.0"|police_shootings$SubjectAge == "57.0"|police_shootings$SubjectAge == "58.0"|police_shootings$SubjectAge == "59.0")] <- "50-59"
+police_shootings$SubjectAge[which(police_shootings$SubjectAge != "0-19"& police_shootings$SubjectAge != "20-29"&police_shootings$SubjectAge != "30-39" &police_shootings$SubjectAge != "40-49" & police_shootings$SubjectAge != "50-59"&police_shootings$SubjectAge != "U")] <- ">=60"
+
+
+
+
+
+
+
+
+
+
+
+# Keywords that suggest fatality
+
+## Police shooting is my training data
+police_shootings$Notes <- tolower(police_shootings$Notes)
+police_shootings$FullNarrative <- tolower(police_shootings$FullNarrative)
+
+# Take out all punctuation
+police_shootings$FullNarrative <- str_replace_all(police_shootings$FullNarrative,'[[:punct:] ]+',' ')
+police_shootings$Notes <- str_replace_all(police_shootings$Notes,'[[:punct:] ]+',' ')
+
+
+police_shootings$Notes[grep("non fatal", x = police_shootings$Notes)] <- "nonFatal"
+police_shootings$FullNarrative[grep("non fatal", x = police_shootings$FullNarrative)] <- "nonFatal"
+
+
+# Key word shooting is most likely fatal
+police_shootings$yesFatal <- rep( FALSE, nrow(police_shootings))
+
+ police_shootings$yesFatal[grep("fatal", x= police_shootings$FullNarrative)] <- "yes"
+  police_shootings$yesFatal[grep("fatal", x= police_shootings$Notes)] <- "yes"
+ police_shootings$yesFatal[grep("killed", x= police_shootings$FullNarrative)] <- "yes"
+  police_shootings$yesFatal[grep("killed", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("died", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("died", x= police_shootings$Notes)] <- "yes"
+ police_shootings$yesFatal[grep("death", x= police_shootings$FullNarrative)] <- "yes"
+  police_shootings$yesFatal[grep("death", x= police_shootings$Notes)] <- "yes"
+ police_shootings$yesFatal[grep("doa", x= police_shootings$FullNarrative)] <- "yes"
+  police_shootings$yesFatal[grep("doa", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("killing", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("killing", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("mental", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("mental", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("suicide", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("suicide", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("critically", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("critically", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("demise", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("demise", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("toxicology", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("toxicology", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("deceased", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("deceased", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("pronounced", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("pronounced", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("end the threat", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("end the threat", x= police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("confines", x=  police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("confines", x=  police_shootings$Notes)] <- "yes"
+police_shootings$yesFatal[grep("knife", x=  police_shootings$FullNarrative)] <- "yes"
+police_shootings$yesFatal[grep("knife", x=  police_shootings$Notes)] <- "yes"
+
+# Key word shooting is not fatal
+police_shootings$notFatal <- rep( FALSE, nrow(police_shootings))
+police_shootings$notFatal[grep("not hit", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$notFatal[grep("no hit", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$notFatal[grep("nonFatal", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$notFatal[grep("survive", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$notFatal[grep("minor injuries", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$notFatal[grep("no injuries", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$notFatal[grep("no hit", x= police_shootings$Notes)] <- "yes"
+police_shootings$notFatal[grep("nonfatal", x= police_shootings$Notes)] <- "yes"
+police_shootings$notFatal[grep("discharge", x= police_shootings$Notes)] <- "yes"
+police_shootings$notFatal[grep("respondent", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$notFatal[grep("2400", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$notFatal[grep("expected", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$notFatal[grep("asp", x= police_shootings$FullNarrative)] <- "yes"
+police_shootings$notFatal[grep("detain", x= police_shootings$FullNarrative)] <- "yes"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Get temperature 
+newDF <- police_shootings[, c("Fatal", "Date")]
+police_shootings$City <- tolower(police_shootings$City)
+police_shootings$City <- str_replace_all(police_shootings$City, " ","")
+
+police_shootings[which(police_shootings$City == "miamidade"),]$City <- "miami" 
+police_shootings[which(police_shootings$City == "baltimorecity"),]$City <- "baltimore" 
+police_shootings[which(police_shootings$City == "baltimorecounty"),]$City <- "baltimore" 
+police_shootings[which(police_shootings$City == "dekalbcounty"),]$City <- "atlanta" 
+police_shootings[which(police_shootings$City == "princegeorgescounty"),]$City <- "baltimore" 
+police_shootings[which(police_shootings$City == "charlottemecklenburg"),]$City <- "charlotte" 
+police_shootings[which(police_shootings$City == "cityofmiami"),]$City <- "miami" 
+police_shootings[which(police_shootings$City == "fortworth"),]$City <- "dallas" 
+police_shootings[which(police_shootings$City == "cincinnati"),]$City <- "indianapolis" 
+police_shootings[which(police_shootings$City == "fairfaxcounty"),]$City <- "washingtondc" 
+
+police_shootings$month <- rep(NA, nrow(police_shootings))
+police_shootings[which(str_detect(police_shootings$Date,"1905")),]$month <- 0
+index <- which(is.na(police_shootings$month))
+police_shootings[index,]$month <- month(police_shootings[index,]$Date)
+police_shootings[which(is.na(police_shootings$Date)),]$month <- 0
+
+police_shootings$Notes <- tolower(police_shootings$Notes)
+police_shootings$FullNarrative <- tolower(police_shootings$FullNarrative)
+
+
+# Calculate temperature based on months
+temperatureFunction <- function(tmp){
+
+  tmp <- data.frame(rbind(tmp))
+  if(tmp$month == 12 | tmp$month <  3){
+    return(tmp$Jan.)
+  }
+  if(tmp$month >= 3 & tmp$month <  6){
+    return(tmp$Apr.)
+  }
+  if(tmp$month >= 6 & tmp$month <  9){
+    return(tmp$Jul.)
+  }
+  if(tmp$month >= 9 & tmp$month <  12){
+    return(tmp$Oct.)
+  }
+  if(is.na(tmp$avgTemp)){
+    return(NA)
+  }
+
+}
+
+
+
+
+
+
+
+
+## Get temperatures
+library(rvest)
+url <- html_session("https://www.infoplease.com/science-health/weather/climate-100-selected-us-cities")
+temps <- url %>% html_table(fill=TRUE)
+temps <- temps[[1]]
+temps <- temps[-c(1,2), c(1,2,3,4,5)]
+temps$City <- str_remove_all(temps$City, ",.*")
+temps$City <- tolower(temps$City)
+temps$City <- str_remove_all(temps$City, " ")
+temps$City[29] <- "dallas"
+temps$City[97] <- "washingtondc"
+temps$City[87] <- "seattle"
+temps[100,] <- NA
+temps[100,] <- c("sanjose", 58,70,83,74)
+
+temps <- temps[-75,]
+colnames(temps) <- c("City", "Jan.","Apr.","Jul.","Oct.")
+temps$Jan. <- as.numeric(temps$Jan.)
+temps$Apr. <- as.numeric(temps$Apr.)
+temps$Jul. <- as.numeric(temps$Jul.)
+temps$Oct. <- as.numeric(temps$Oct.)
+
+
+## Update police training dataframe
+police_shootings <- inner_join(police_shootings, temps, by = "City")
+police_shootings<- police_shootings %>% group_by(City) %>% mutate(avgTemp = (Jan. + Apr. + Jul. +Oct.)/4)
+
+
+police_shootings$realTemp <- apply(police_shootings[,c("month", "Jan.","Apr.","Jul.","Oct.","avgTemp")],MARGIN = 1, temperatureFunction)
+
+
+
+
+
+## get median income
+url <- html_session("https://en.wikipedia.org/wiki/List_of_United_States_metropolitan_areas_by_per_capita_income")
+incomeTable <- url %>% html_table()
+income <- as.data.frame(incomeTable[[3]],stringsAsFactors = FALSE)
+income <- income[,-1]
+colnames(income) <- c("city","population", "median_income")
+income$city <- str_replace_all(income$city, "–","-")
+income$city <- str_remove_all(income$city, "(-|,).*")
+income$city <- tolower(income$city)
+income$city <- str_replace_all(income$city, " ","")
+income$city[1] <- "washingtondc"
+income <- income[-c(25,217,268),]
+income <- rbind(income, c("chicago","2,700,000" ,"$66,020"))
+income <- rbind(income, c("newark", "281,764","$34,012"))
+colnames(income) <- c("City","population", "median_income")
+tmp <- police_shootings %>% inner_join(income)
+
+tmp$median_income <- as.numeric(str_replace_all(substring(as.character(tmp$median_income),2),",",""))
+tmp$population <- as.numeric(str_replace_all(as.character(tmp$population),",",""))
+
+
+
+library(maps)
+myuscities <- us.cities
+myuscities$name <- tolower(myuscities$name)
+myuscities$name <- substr(myuscities$name,1,nchar(myuscities$name)-3)
+myuscities$name <- unlist(str_remove_all(myuscities$name, " "))
+myuscities <- myuscities[-433,]
+myuscities <- myuscities[-722,]
+myuscities <- myuscities[-c(198,197),]
+myuscities <- myuscities[-c(609,611),]
+myuscities <- myuscities[-441,]
+myuscities <- myuscities[-714,]
+myuscities$name[936] <- "washingtondc"
+myuscities$name[777] <- "st.louis"
+
+
+
+test <- tmp %>% left_join(myuscities,by=c("City" = "name"))
+names(test)[16] <- "name" 
+attributes(test)$vars <- "name"
+test$name <- factor(test$name)
+
+return(test)
+}
+
+test <- myFunction(police_shootings = police_shootings)
+
+x <- test[,c("Fatal", "notFatal", "yesFatal","SubjectArmed","SubjectGender","SubjectAge", "SubjectRace", "NumberOfOfficers" , "name","month","lat","long","avgTemp","population","median_income")]
+
+# Model selection 
+
+# correlation plot
+library(corrplot)
+corrplot(cor(x[,c(8,10:15)], use = "complete.obs"))
+
+# remove averageTemp because of correlation with lat
+x <- x[,-11]
+
+x <- x[which(x$Fatal != "U"),]
+x[which(x$SubjectRace== "A"), ]$SubjectRace <- "O"
+x[which(x$SubjectAge == ">=60"),]$SubjectAge <- "50-59"
+x[which(x$SubjectGender== "N/A"),]$SubjectGender <- NA
+x[which(is.na(x$SubjectGender)),]$SubjectGender <- "U"
+x[which(is.na(x$SubjectArmed)),]$SubjectArmed <- "U"
+x[which(is.na(x$SubjectRace)),]$SubjectRace <- "U"
+x[which(is.na(x$NumberOfOfficers)),]$NumberOfOfficers <- 1
+x$SubjectGender <- factor(x$SubjectGender)
+x$SubjectAge <- factor(x$SubjectAge)
+x$SubjectRace <- factor(x$SubjectRace)
+x$SubjectArmed <- factor(x$SubjectArmed)
+x$name <- factor(x$name)
+x <- x %>% na.omit
+x$Fatal <- factor(x$Fatal)
+x$yesFatal <- factor(x$yesFatal)
+x$notFatal <- factor(x$notFatal)
+levels(x$name) <- levels(test$name)
+
+
+
+rf <- randomForest(Fatal ~. , data =x)
+
+
+#get id of Us
+x <- test[,c("Fatal", "id","notFatal", "yesFatal","SubjectArmed","SubjectGender","SubjectAge", "SubjectRace", "NumberOfOfficers" , "name","month","long","avgTemp","population","median_income")]
+x <- x[which(x$Fatal == "U"),]
+x[which(x$SubjectAge == ">=60"),]$SubjectAge <- "50-59"
+x[which(is.na(x$SubjectArmed)),]$SubjectArmed <- "U"
+x[which(is.na(x$NumberOfOfficers)),]$NumberOfOfficers <- 1
+x$Fatal <- factor(x$Fatal)
+x$SubjectArmed <- factor(x$SubjectArmed)
+x$SubjectGender <- factor(x$SubjectGender)
+x$SubjectAge <- factor(x$SubjectAge)
+x$SubjectRace <- factor(x$SubjectRace)
+levels(x$SubjectRace) <- c("B","L","U","W","O")
+x <- x %>% na.omit
+x$yesFatal <- factor(x$yesFatal)
+x$notFatal <- factor(x$notFatal)
+myids <- x$id
+x <- x[,-2]
+
+predU <- predict(rf, x[,-1], type ="response")
+predU <- as.character(predU)
+
+ids <- myids
+x <- test[,c("Fatal","id","notFatal", "yesFatal","SubjectArmed","SubjectGender","SubjectAge", "SubjectRace", "NumberOfOfficers" , "name","month")]
+x[which(x$id %in% ids),]$Fatal <- predU
+x <- x[,-2]
+x[which(x$SubjectRace== "A"), ]$SubjectRace <- "O"
+x[which(x$SubjectAge == ">=60"),]$SubjectAge <- "50-59"
+x[which(x$SubjectGender== "N/A"),]$SubjectGender <- NA
+x[which(is.na(x$SubjectGender)),]$SubjectGender <- "U"
+x[which(is.na(x$SubjectArmed)),]$SubjectArmed <- "U"
+x[which(is.na(x$SubjectRace)),]$SubjectRace <- "U"
+x[which(is.na(x$NumberOfOfficers)),]$NumberOfOfficers <- 1
+x$SubjectGender <- factor(x$SubjectGender)
+x$SubjectAge <- factor(x$SubjectAge)
+x$SubjectRace <- factor(x$SubjectRace)
+x$SubjectArmed <- factor(x$SubjectArmed)
+x$Fatal <- factor(x$Fatal)
+x$notFatal <- factor(x$notFatal)
+x$yesFatal <- factor(x$yesFatal)
+x$name <- factor(x$name)
+x <- x %>% na.omit 
+
+
+
+rf <- randomForest(Fatal ~. ,data=x)
+
+
+
+
+
+
+
+
+```  
+
+
+
+# ```{r}
+# # Testing Data
+# testing_police <- read.csv("~/Downloads/test.csv",stringsAsFactors = FALSE,header = TRUE)
+# testing_police$City <- tolower(testing_police$City)
+# testing_police$City <- str_replace_all(testing_police$City, " ","")
+# testing_police$Notes <- tolower(testing_police$Notes)
+# testing_police$FullNarrative <- tolower(testing_police$FullNarrative)
+# testing_police$FullNarrative <- str_replace_all(testing_police$FullNarrative,'[[:punct:] ]+',' ')
+# 
+# 
+#  testing_police[which( testing_police$OfficerGender == "MALE"),]$OfficerGender <- "M"
+#  testing_police[which( testing_police$OfficerGender == "MALE;MALE"),]$OfficerGender <- "M;M"
+# 
+# 
+# testing_police[which(testing_police$City == "miamidade"),]$City <- "miami" 
+# testing_police[which(testing_police$City == "baltimorecity"),]$City <- "baltimore" 
+# testing_police[which(testing_police$City == "baltimorecounty"),]$City <- "baltimore" 
+# testing_police[which(testing_police$City == "dekalbcounty"),]$City <- "atlanta" 
+# testing_police[which(testing_police$City == "princegeorgescounty"),]$City <- "baltimore" 
+# testing_police[which(testing_police$City == "charlottemecklenburg"),]$City <- "charlotte" 
+# testing_police[which(testing_police$City == "cityofmiami"),]$City <- "miami" 
+# testing_police[which(testing_police$City == "fortworth"),]$City <- "dallas" 
+# testing_police[which(testing_police$City == "cincinnati"),]$City <- "indianapolis" 
+# testing_police[which(testing_police$City == "fairfaxcounty"),]$City <- "washingtondc" 
+# 
+# 
+# 
+# testing_police$SubjectAge[which(testing_police$SubjectAge == "UNKNOWN")] <- "U"
+# testing_police$SubjectAge[which(testing_police$SubjectAge == "Juvenile")] <- "0-19"
+# testing_police$SubjectAge[which(testing_police$SubjectAge == "N/A")] <- "U"
+# testing_police$SubjectAge[which(testing_police$SubjectAge == "4.0")] <- "U"
+# testing_police$SubjectAge[which(testing_police$SubjectAge == "12.0"| testing_police$SubjectAge == "13.0"|testing_police$SubjectAge == "14.0" |testing_police$SubjectAge == "15.0" | testing_police$SubjectAge == "16.0"|testing_police$SubjectAge == "17.0"|testing_police$SubjectAge == "18.0"|testing_police$SubjectAge == "19.0")] <- "0-19"
+# testing_police$SubjectAge[which(testing_police$SubjectAge == "20.0"| testing_police$SubjectAge == "21.0"|testing_police$SubjectAge == "22.0" |testing_police$SubjectAge == "23.0" | testing_police$SubjectAge == "24.0"|testing_police$SubjectAge == "25.0"|testing_police$SubjectAge == "26.0"|testing_police$SubjectAge == "27.0"|testing_police$SubjectAge == "28.0"|testing_police$SubjectAge == "29.0")] <- "20-29"
+# testing_police$SubjectAge[which(testing_police$SubjectAge == "21-23")] <- "20-29"
+# testing_police$SubjectAge[which(testing_police$SubjectAge == "30.0"| testing_police$SubjectAge == "31.0"|testing_police$SubjectAge == "32.0" |testing_police$SubjectAge == "33.0" | testing_police$SubjectAge == "34.0"|testing_police$SubjectAge == "35.0"|testing_police$SubjectAge == "36.0"|testing_police$SubjectAge == "37.0"|testing_police$SubjectAge == "38.0"|testing_police$SubjectAge == "39.0")] <- "30-39"
+# testing_police$SubjectAge[which(testing_police$SubjectAge == "40.0"| testing_police$SubjectAge == "41.0"|testing_police$SubjectAge == "42.0" |testing_police$SubjectAge == "43.0" | testing_police$SubjectAge == "44.0"|testing_police$SubjectAge == "45.0"|testing_police$SubjectAge == "46.0"|testing_police$SubjectAge == "47.0"|testing_police$SubjectAge == "48.0"|testing_police$SubjectAge == "49.0")] <- "40-49"
+# testing_police$SubjectAge[which(testing_police$SubjectAge == "50.0"| testing_police$SubjectAge == "51.0"|testing_police$SubjectAge == "52.0" |testing_police$SubjectAge == "53.0" | testing_police$SubjectAge == "54.0"|testing_police$SubjectAge == "55.0"|testing_police$SubjectAge == "56.0"|testing_police$SubjectAge == "57.0"|testing_police$SubjectAge == "58.0"|testing_police$SubjectAge == "59.0")] <- "50-59"
+# testing_police$SubjectAge[which(testing_police$SubjectAge != "0-19"& testing_police$SubjectAge != "20-29"&testing_police$SubjectAge != "30-39" &testing_police$SubjectAge != "40-49" & testing_police$SubjectAge != "50-59"&testing_police$SubjectAge != "U")] <- ">=60"
+# 
+# testing_police <- testing_police %>% inner_join(income)
+# 
+# testing_police$median_income <- as.numeric(str_replace_all(substring(as.character(testing_police$median_income),2),",",""))
+# testing_police$population <- as.numeric(str_replace_all(as.character(testing_police$population),",",""))
+# 
+# 
+# testing_police <- inner_join(testing_police, temps, by = "City")
+# testing_police<- testing_police %>% group_by(City) %>% mutate(avgTemp = (Jan. + Apr. + Jul. +Oct.)/4)
+# testing_police <- testing_police %>% inner_join(myuscities,by=c("City" = "name"))
+# names(testing_police)[15] <- "name" 
+# attributes(testing_police)$vars <- "name"
+# testing_police$month <- month(testing_police$Date)
+# testing_police[is.na(testing_police$month),]$month <- 0
+# 
+# 
+# 
+# 
+# 
+# 
+# ## Police shooting is my training data
+# testing_police$Notes <- tolower(testing_police$Notes)
+# testing_police$FullNarrative <- tolower(testing_police$FullNarrative)
+# 
+# # Take out all punctuation
+# testing_police$FullNarrative <- str_replace_all(testing_police$FullNarrative,'[[:punct:] ]+',' ')
+# testing_police$Notes <- str_replace_all(testing_police$Notes,'[[:punct:] ]+',' ')
+# 
+# 
+# # Key word shooting is fatal
+# testing_police$yesFatal <- rep( FALSE, nrow(testing_police))
+#  testing_police$yesFatal[grep("fatally shot", x= testing_police$FullNarrative)] <- "yes"
+#  testing_police$yesFatal[grep("killed", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("died", x= testing_police$FullNarrative)] <- "yes"
+#  testing_police$yesFatal[grep("death", x= testing_police$FullNarrative)] <- "yes"
+#  testing_police$yesFatal[grep("doa", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("fatally shot", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("killing", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("police shooting death", x= testing_police$FullNarrative)] <- "yes"
+#  testing_police$yesFatal[grep("fatally shoot", x= testing_police$FullNarrative)] <- "yes"
+#  testing_police$yesFatal[grep("shooting fatal", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("shooting fatal", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("shooting fatal", x= testing_police$Notes)] <- "yes"
+# testing_police$yesFatal[grep("mental", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("suicide", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("critically injuring", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("critically injured", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("dead", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("demise", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("toxicology", x= testing_police$FullNarrative)] <- "yes"
+#  testing_police$yesFatal[grep("deadly force", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("deceased", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("pronounced", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("fatality", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("end the threat", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("additional", x= testing_police$Notes)] <- "yes"
+# testing_police$yesFatal[grep("fatally", x= testing_police$Notes)] <- "yes"
+# testing_police$yesFatal[grep("07", x= testing_police$Notes)] <- "yes"
+# testing_police$yesFatal[grep("perpetrator", x=  testing_police$FullNarrative)] <- "yes"
+# testing_police$yesFatal[grep("confines", x=  testing_police$FullNarrative)] <- "yes"
+# 
+# # Key word shooting is not fatal
+# testing_police$notFatal <- rep( FALSE, nrow(testing_police))
+# testing_police$notFatal[grep("not hit", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("no hit", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("non fatal", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("survived", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("minor injuries", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("no injuries", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("no hit", x= testing_police$Notes)] <- "yes"
+# testing_police$notFatal[grep("non fatal", x= testing_police$Notes)] <- "yes"
+# testing_police$notFatal[grep("discharge", x= testing_police$Notes)] <- "yes"
+# testing_police$notFatal[grep("respondent", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("2400", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("expected", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("surrender", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("asp", x= testing_police$FullNarrative)] <- "yes"
+# testing_police$notFatal[grep("detain", x= testing_police$FullNarrative)] <- "yes"
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# y <-testing_police[,c("notFatal","name","yesFatal", "month", "SubjectGender",  "SubjectAge", "NumberOfOfficers" , "SubjectRace", "SubjectArmed")]
+# y[which(y$SubjectRace== "A"), ]$SubjectRace <- "O"
+# y[which(y$SubjectAge == ">=60"),]$SubjectAge <- "50-59"
+# y$SubjectGender[1280] <- "M"
+# y[which(is.na(y$NumberOfOfficers)),]$NumberOfOfficers <- 1
+# y[which(is.na(y$SubjectArmed)),]$SubjectArmed <- "U"
+# y$SubjectArmed <- factor(y$SubjectArmed)
+# y$SubjectGender <- factor(y$SubjectGender)
+# y$SubjectAge <- factor(y$SubjectAge)
+# y$SubjectRace <- factor(y$SubjectRace)
+# y$NumberOfOfficers <- as.integer(y$NumberOfOfficers)
+# y$yesFatal <- factor(y$yesFatal)
+# y$notFatal <- factor(y$notFatal)
+# y$name <- factor(y$name)
+# y <- y %>% na.omit
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# pred <- predict(glm, y, type = "response")
+# test_pred <- as.data.frame(cbind(testing_police$id, pred))
+# names(test_pred) <- c("id","Fatal")
+# test_pred$Fatal <- ifelse(pred <  .55, "Yes","No")
+# 
+# 
+# 
+# 
+# 
+# ```
+

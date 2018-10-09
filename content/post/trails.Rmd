@@ -11,9 +11,10 @@ tags: []
 library(rvest)
 library(dplyr)
 library(tidyr)
-library(stringr)
+library(stringr) 
 library(RSelenium)
 ```
+
 
 ```{r}
 library(data.table)
@@ -34,7 +35,7 @@ getTrailDetails <- function(x){
   routeType <- updateURL %>% html_node(".loop .detail-data") %>% html_text()
   ratingCount <- parse_number(updateURL %>% html_node("#activity-feeds .active a") %>% html_text())
   trailKeywords <- list(updateURL %>% html_nodes(".big") %>% html_text())[]
-  
+  ## Additonal info.
   # rD <- rsDriver(browser = c("phantomjs"))
   # remDr <- rD[["client"]]
   # mainpage <- remDr$navigate(updateURL$url)

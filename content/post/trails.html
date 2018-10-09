@@ -21,7 +21,7 @@ tags: []
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>library(tidyr)
-library(stringr)
+library(stringr) 
 library(RSelenium)</code></pre>
 <pre class="r"><code>library(data.table)</code></pre>
 <pre><code>## 
@@ -51,7 +51,7 @@ getTrailDetails &lt;- function(x){
   routeType &lt;- updateURL %&gt;% html_node(&quot;.loop .detail-data&quot;) %&gt;% html_text()
   ratingCount &lt;- parse_number(updateURL %&gt;% html_node(&quot;#activity-feeds .active a&quot;) %&gt;% html_text())
   trailKeywords &lt;- list(updateURL %&gt;% html_nodes(&quot;.big&quot;) %&gt;% html_text())[]
-  
+  ## Additonal info.
   # rD &lt;- rsDriver(browser = c(&quot;phantomjs&quot;))
   # remDr &lt;- rD[[&quot;client&quot;]]
   # mainpage &lt;- remDr$navigate(updateURL$url)

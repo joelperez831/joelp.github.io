@@ -15,7 +15,7 @@ library(stringr)
 library(RSelenium)
 ```
 
-
+  
 ```{r}
 library(data.table)
 library(readr)
@@ -35,7 +35,7 @@ getTrailDetails <- function(x){
   routeType <- updateURL %>% html_node(".loop .detail-data") %>% html_text()
   ratingCount <- parse_number(updateURL %>% html_node("#activity-feeds .active a") %>% html_text())
   trailKeywords <- list(updateURL %>% html_nodes(".big") %>% html_text())[]
-  ## Additonal info.
+  ## Additonal
   # rD <- rsDriver(browser = c("phantomjs"))
   # remDr <- rD[["client"]]
   # mainpage <- remDr$navigate(updateURL$url)
@@ -56,7 +56,7 @@ getTrailDetails <- function(x){
 }
 
 
-trails <- lapply(trailNames, getTrailDetails)
+trails <- lapply(trailNames,getTrailDetails)
 
 trailsDf <- data.frame((do.call(rbind,trails)),stringsAsFactors = FALSE)
 newTrailsDf <- data.frame(apply(X = trailsDf[,-6],MARGIN = 2,unlist),stringsAsFactors = FALSE)

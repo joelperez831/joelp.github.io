@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.47.1" />
+
+
+<title>Take a hike(with a recommendation system). - Joey&#39;s Data Blog</title>
+<meta property="og:title" content="Take a hike(with a recommendation system). - Joey&#39;s Data Blog">
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdn.bootcss.com/highlight.js/9.11.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.jpg"
+         width="75"
+         height="75"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/joelperez831">GitHub</a></li>
+    
+    <li><a href="https://www.linkedin.com/in/joel-perez-808046147/">LinkedIn</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">2 min read</span>
+    
+
+    <h1 class="article-title">Take a hike(with a recommendation system).</h1>
+
+    
+    <span class="article-date">2018/10/09</span>
+    
+
+    <div class="article-content">
+      <pre class="r"><code>library(rvest)</code></pre>
+<pre><code>## Loading required package: xml2</code></pre>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(tidyr)
+library(stringr)
+library(RSelenium)</code></pre>
+<pre class="r"><code>library(data.table)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;data.table&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:dplyr&#39;:
+## 
+##     between, first, last</code></pre>
+<pre class="r"><code>library(readr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;readr&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:rvest&#39;:
+## 
+##     guess_encoding</code></pre>
+<pre class="r"><code>url &lt;- html_session(&quot;https://www.alltrails.com/parks/us/california/pinnacles-national-park&quot;)
+
+trailNames &lt;- url %&gt;% html_nodes(&quot;.short a&quot;)
+trailNames &lt;- trailNames %&gt;% html_text()
+trailAvgRating &lt;- as.numeric(url %&gt;% html_nodes(&quot;.undefined&quot;) %&gt;% html_attr(&quot;title&quot;))[-1]
+difficulty &lt;- (url %&gt;% html_nodes(&quot;.selected&quot;) %&gt;% html_text())[-c(1,2)]
+
+getTrailDetails &lt;- function(x){
+  trailName &lt;- x
+  updateURL &lt;- url %&gt;% follow_link(x)
+  
+  distance &lt;- parse_number(updateURL %&gt;% html_node(&quot;.distance-icon .detail-data&quot;) %&gt;% html_text())
+  elevation &lt;- parse_number(updateURL %&gt;% html_node(&quot;.elevation-icon .detail-data&quot;) %&gt;% html_text())
+  routeType &lt;- updateURL %&gt;% html_node(&quot;.loop .detail-data&quot;) %&gt;% html_text()
+  ratingCount &lt;- parse_number(updateURL %&gt;% html_node(&quot;#activity-feeds .active a&quot;) %&gt;% html_text())
+  trailKeywords &lt;- list(updateURL %&gt;% html_nodes(&quot;.big&quot;) %&gt;% html_text())[]
+  
+  # rD &lt;- rsDriver(browser = c(&quot;phantomjs&quot;))
+  # remDr &lt;- rD[[&quot;client&quot;]]
+  # mainpage &lt;- remDr$navigate(updateURL$url)
+  # webElems &lt;- remDr$findElements(using = &#39;css selector&#39;, &quot;#reviews h3&quot;)
+  # while(length(webElems) != 0){
+  #   webElem &lt;- remDr$findElement(using = &#39;css selector&#39;, &quot;#reviews h3&quot;)
+  #   webElem$clickElement()
+  #   Sys.sleep(2)
+  #   webElems &lt;- remDr$findElements(using = &#39;css selector&#39;, &quot;#reviews h3&quot;)
+  #   Sys.sleep(2)
+  # }
+  # mainpage &lt;- read_html(unlist(remDr$getPageSource()), encoding = &quot;UTF-8&quot;)
+  # reviews &lt;-  mainpage %&gt;% html_nodes(&quot;#reviews p&quot;) %&gt;% html_text()
+  # stars &lt;-  mainpage %&gt;% html_nodes(&quot;#reviews .rating&quot;)  %&gt;% html_attr(&quot;title&quot;)
+  # date &lt;-  mainpage %&gt;% html_nodes(&quot;.subtext&quot;)  %&gt;% html_text()
+  
+  return(c(trailName, distance, elevation,routeType,ratingCount,trailKeywords))
+}
+
+
+trails &lt;- lapply(trailNames, getTrailDetails)</code></pre>
+<pre><code>## Navigating to /trail/us/california/high-peaks-condor-gulch-trail</code></pre>
+<pre><code>## Navigating to /trail/us/california/old-pinnacles-trail-loop</code></pre>
+<pre><code>## Navigating to /trail/us/california/high-peaks-trail</code></pre>
+<pre><code>## Navigating to /trail/us/california/bear-gulch-day-use-area-to-reservoir-via-rim-trail</code></pre>
+<pre><code>## Navigating to /trail/us/california/bear-gulch-trail</code></pre>
+<pre><code>## Navigating to /trail/us/california/balconies-trail</code></pre>
+<pre><code>## Navigating to /trail/us/california/old-pinnacles-trail-to-balconies</code></pre>
+<pre><code>## Navigating to /trail/us/california/high-peaks-balconies-cave-pinnacles-nm</code></pre>
+<pre><code>## Navigating to /trail/us/california/juniper-canyon-trail-to-high-peaks?ref=result-card</code></pre>
+<pre><code>## Navigating to /trail/us/california/chalone-peak-trail</code></pre>
+<pre><code>## Navigating to /trail/us/california/moses-spring-trail-to-bear-gulch-reservoir?ref=result-card</code></pre>
+<pre><code>## Navigating to /trail/us/california/high-peaks-and-bear-gulch-loop-trail</code></pre>
+<pre><code>## Navigating to /trail/us/california/balconies-trail-to-balconies-cliffs-via-balconies-cave?ref=result-card</code></pre>
+<pre><code>## Navigating to /trail/us/california/balconies-cave-trail</code></pre>
+<pre><code>## Navigating to /trail/us/california/condor-gulch-trail-to-overlook?ref=result-card</code></pre>
+<pre><code>## Navigating to /trail/us/california/juniper-canyon-trail-to-high-peaks-trail-loop?ref=result-card</code></pre>
+<pre><code>## Navigating to /trail/us/california/old-pinnacles-balconies-cliffs-juniper-canyon-high-peaks-and-bench-trail-loop
+## Navigating to /trail/us/california/old-pinnacles-balconies-cliffs-juniper-canyon-high-peaks-and-bench-trail-loop</code></pre>
+<pre><code>## Navigating to /trail/us/california/balconies-trail-to-machete-ridge?ref=result-card</code></pre>
+<pre><code>## Navigating to /trail/us/california/peaks-view-to-high-peaks-trail-loop?ref=result-card</code></pre>
+<pre><code>## Navigating to /trail/us/california/pinnacles-overlook-trail?ref=result-card</code></pre>
+<pre><code>## Navigating to /trail/us/california/peaks-view-day-use-area-to-old-pinnacles-trailhead?ref=result-card</code></pre>
+<pre><code>## Navigating to /trail/us/california/visitor-center-to-bacon-ranch?ref=result-card</code></pre>
+<pre><code>## Navigating to /trail/us/california/north-wilderness-trail-to-twin-knolls?ref=result-card</code></pre>
+<pre class="r"><code>trailsDf &lt;- data.frame((do.call(rbind,trails)),stringsAsFactors = FALSE)
+newTrailsDf &lt;- data.frame(apply(X = trailsDf[,-6],MARGIN = 2,unlist),stringsAsFactors = FALSE)
+newTrailsDf$keyword &lt;- trailsDf$X6
+colnames(newTrailsDf)[1:5] &lt;- c(&quot;trailName&quot;, &quot;dist.&quot;, &quot;elevation&quot;, &quot;routeType&quot;, &quot;ratingCount&quot;)
+newTrailsDf$difficulty &lt;- difficulty
+newTrailsDf$avgRating &lt;- trailAvgRating
+newTrailsDf[,c(2,3,5,8)] &lt;- sapply(newTrailsDf[,c(2,3,5,8)], as.numeric)</code></pre>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/highlight.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/r.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+

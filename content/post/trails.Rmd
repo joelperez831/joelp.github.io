@@ -1,0 +1,69 @@
+---
+title: Take a hike(with a recommendation system).
+author: ''
+date: '2018-10-09'
+slug: trails
+categories: []
+tags: []
+---
+
+```{r}
+library(rvest)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(RSelenium)
+```
+
+```{r}
+library(data.table)
+library(readr)
+url <- html_session("https://www.alltrails.com/parks/us/california/pinnacles-national-park")
+
+trailNames <- url %>% html_nodes(".short a")
+trailNames <- trailNames %>% html_text()
+trailAvgRating <- as.numeric(url %>% html_nodes(".undefined") %>% html_attr("title"))[-1]
+difficulty <- (url %>% html_nodes(".selected") %>% html_text())[-c(1,2)]
+
+getTrailDetails <- function(x){
+  trailName <- x
+  updateURL <- url %>% follow_link(x)
+  
+  distance <- parse_number(updateURL %>% html_node(".distance-icon .detail-data") %>% html_text())
+  elevation <- parse_number(updateURL %>% html_node(".elevation-icon .detail-data") %>% html_text())
+  routeType <- updateURL %>% html_node(".loop .detail-data") %>% html_text()
+  ratingCount <- parse_number(updateURL %>% html_node("#activity-feeds .active a") %>% html_text())
+  trailKeywords <- list(updateURL %>% html_nodes(".big") %>% html_text())[]
+  
+  # rD <- rsDriver(browser = c("phantomjs"))
+  # remDr <- rD[["client"]]
+  # mainpage <- remDr$navigate(updateURL$url)
+  # webElems <- remDr$findElements(using = 'css selector', "#reviews h3")
+  # while(length(webElems) != 0){
+  #   webElem <- remDr$findElement(using = 'css selector', "#reviews h3")
+  #   webElem$clickElement()
+  #   Sys.sleep(2)
+  #   webElems <- remDr$findElements(using = 'css selector', "#reviews h3")
+  #   Sys.sleep(2)
+  # }
+  # mainpage <- read_html(unlist(remDr$getPageSource()), encoding = "UTF-8")
+  # reviews <-  mainpage %>% html_nodes("#reviews p") %>% html_text()
+  # stars <-  mainpage %>% html_nodes("#reviews .rating")  %>% html_attr("title")
+  # date <-  mainpage %>% html_nodes(".subtext")  %>% html_text()
+  
+  return(c(trailName, distance, elevation,routeType,ratingCount,trailKeywords))
+}
+
+
+trails <- lapply(trailNames, getTrailDetails)
+
+trailsDf <- data.frame((do.call(rbind,trails)),stringsAsFactors = FALSE)
+newTrailsDf <- data.frame(apply(X = trailsDf[,-6],MARGIN = 2,unlist),stringsAsFactors = FALSE)
+newTrailsDf$keyword <- trailsDf$X6
+colnames(newTrailsDf)[1:5] <- c("trailName", "dist.", "elevation", "routeType", "ratingCount")
+newTrailsDf$difficulty <- difficulty
+newTrailsDf$avgRating <- trailAvgRating
+newTrailsDf[,c(2,3,5,8)] <- sapply(newTrailsDf[,c(2,3,5,8)], as.numeric)
+```
+
+

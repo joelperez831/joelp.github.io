@@ -6,10 +6,19 @@
     <description>Recent content on Joey&#39;s Data Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 30 Aug 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 09 Oct 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Take a hike(with a recommendation system).</title>
+      <link>/2018/10/09/trails/</link>
+      <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/2018/10/09/trails/</guid>
+      <description>library(rvest) ## Loading required package: xml2 library(dplyr) ## ## Attaching package: &amp;#39;dplyr&amp;#39; ## The following objects are masked from &amp;#39;package:stats&amp;#39;: ## ## filter, lag ## The following objects are masked from &amp;#39;package:base&amp;#39;: ## ## intersect, setdiff, setequal, union library(tidyr) library(stringr) library(RSelenium) library(data.table) ## ## Attaching package: &amp;#39;data.table&amp;#39; ## The following objects are masked from &amp;#39;package:dplyr&amp;#39;: ## ## between, first, last library(readr) ## ## Attaching package: &amp;#39;readr&amp;#39; ## The following object is masked from &amp;#39;package:rvest&amp;#39;: ## ## guess_encoding url &amp;lt;- html_session(&amp;quot;https://www.</description>
+    </item>
     
     <item>
       <title>Predicting Fatalities in Police-involved Shootings</title>

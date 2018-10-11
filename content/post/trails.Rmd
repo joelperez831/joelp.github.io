@@ -34,7 +34,9 @@ getTrailDetails <- function(x){
   elevation <- parse_number(updateURL %>% html_node(".elevation-icon .detail-data") %>% html_text())
   routeType <- updateURL %>% html_node(".loop .detail-data") %>% html_text()
   ratingCount <- parse_number(updateURL %>% html_node("#activity-feeds .active a") %>% html_text())
-  trailKeywords <- list(updateURL %>% html_nodes(".big") %>% html_text())[]
+  trailKeywords <- (updateURL %>% html_nodes(".big") %>% html_text()) %>% paste(collapse = "|")
+  trailKeywords <- str_replace_all(trailKeywords," ", "")
+  
   ## Additonal
   # rD <- rsDriver(browser = c("phantomjs"))
   # remDr <- rD[["client"]]
@@ -59,12 +61,23 @@ getTrailDetails <- function(x){
 trails <- lapply(trailNames,getTrailDetails)
 
 trailsDf <- data.frame((do.call(rbind,trails)),stringsAsFactors = FALSE)
-newTrailsDf <- data.frame(apply(X = trailsDf[,-6],MARGIN = 2,unlist),stringsAsFactors = FALSE)
-newTrailsDf$keyword <- trailsDf$X6
-colnames(newTrailsDf)[1:5] <- c("trailName", "dist.", "elevation", "routeType", "ratingCount")
-newTrailsDf$difficulty <- difficulty
-newTrailsDf$avgRating <- trailAvgRating
-newTrailsDf[,c(2,3,5,8)] <- sapply(newTrailsDf[,c(2,3,5,8)], as.numeric)
+colnames(trailsDf) <- c("trailName", "dist.", "elevation", "routeType", "ratingCount", "keyword")
+trailsDf$difficulty <- difficulty
+trailsDf$avgRating <- trailAvgRating
+trailsDf[,c(2,3,5,8)] <- sapply(trailsDf[,c(2,3,5,8)], as.numeric)
 ```
+
+```{r}
+keywords <- as.data.frame(trailsDf$keyword,stringsAsFactors = FALSE)
+
+myTm <- data.frame(t(as.matrix(TermDocumentMatrix(Corpus(VectorSource(keywords$`trailsDf$keyword`))))))
+```    
+
+
+```{r}
+binaryRatings <- ifelse(trailsDf$avgRating < 4, -1,1)
+
+```
+
 
 

@@ -17,8 +17,7 @@
       <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>/2018/10/09/trails/</guid>
-      <description>library(rvest) ## Loading required package: xml2 library(dplyr) ## ## Attaching package: &amp;#39;dplyr&amp;#39; ## The following objects are masked from &amp;#39;package:stats&amp;#39;: ## ## filter, lag ## The following objects are masked from &amp;#39;package:base&amp;#39;: ## ## intersect, setdiff, setequal, union library(tidyr) library(stringr) library(RSelenium) ** WEB SCRAPING PORTION**
-# library(data.table) # library(readr) # url &amp;lt;- html_session(&amp;quot;https://www.alltrails.com/us/california&amp;quot;) # # rD &amp;lt;- rsDriver(browser = &amp;#39;firefox&amp;#39;) # remDr &amp;lt;- rD[[&amp;quot;client&amp;quot;]] # mainpage &amp;lt;- remDr$navigate(url$url) # webElems &amp;lt;- remDr$findElements(using = &amp;#39;css selector&amp;#39;, &amp;quot;#load_more h3&amp;quot;)[[2]] # for(i in 1:50){ # webElem &amp;lt;- remDr$findElement(&amp;quot;css&amp;quot;, &amp;quot;body&amp;quot;) # webElem$sendKeysToElement(list(key = &amp;quot;end&amp;quot;)) # webElem &amp;lt;- remDr$findElements(using = &amp;#39;css selector&amp;#39;, &amp;quot;#load_more h3&amp;quot;)[[2]] # Sys.</description>
+      <description> </description>
     </item>
     
     <item>

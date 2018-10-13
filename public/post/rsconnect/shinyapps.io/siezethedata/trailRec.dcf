@@ -1,0 +1,13 @@
+name: trailRec
+title: trailRec
+username:
+account: siezethedata
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 512726
+bundleId: 1641297
+url: https://siezethedata.shinyapps.io/trailRec/
+when: 1539468054.08811
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: 2017-11-06-test-page.html|2017-11-06-test-page.Rmd|2018-08-30-predicting-fatalities-in-police-involved-shootings.html|2018-08-30-predicting-fatalities-in-police-involved-shootings.Rmd|image1.png|trailsDf|trails.html|trails.Rmd

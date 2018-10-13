@@ -120,9 +120,10 @@ cosine_sim <- cos.sim(myTm,myTm)
    idx <- index[title]
    
    sim_scores <- cosine_sim[idx[1],]
+   sim_scores <- sim_scores[-idx]
    sim_scores <- sort(sim_scores, decreasing = TRUE)
    
-   sim_scores <- sim_scores[2:11]
+   sim_scores <- sim_scores[1:10]
 
    trail_index <- as.numeric(names(sim_scores))
    
@@ -130,8 +131,26 @@ cosine_sim <- cos.sim(myTm,myTm)
    
  }
  
-get_recommendations("Old Pinnacles Trail Loop")
+get_recommendations("Edgewood Trail Loop")
 ```  
+
+```{r}
+library(shiny)
+library(DT)
+ui <- basicPage(
+  textInput("caption","Trail Name",value = ""),
+  h2("Take a Hike(w/ a recommendation system"),
+  DT::dataTableOutput("mytable")
+)
+
+server <- function(input, output) {
+  output$mytable = DT::renderDataTable({
+    get_recommendations(input$caption)
+  },options = list(pageLength = 10,paging=FALSE,searching=FALSE))
+}
+  
+shinyApp(ui, server)
+```
 
 
 

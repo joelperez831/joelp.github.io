@@ -183,15 +183,11 @@ library(RSelenium)</code></pre>
 #   ratingCount &lt;- parse_number(updateURL %&gt;% html_node(&quot;#activity-feeds .active a&quot;) %&gt;% html_text())
 #   trailKeywords &lt;- (updateURL %&gt;% html_nodes(&quot;.big&quot;) %&gt;% html_text()) %&gt;% paste(collapse = &quot;|&quot;)
 #   
+#   # Give more weight to route type by adding it 3 times
 #   featureSoup &lt;- paste(paste0(rep(routeType,3),collapse = &quot;|&quot;),trailKeywords,sep=&quot;|&quot;)
 #   featureSoup &lt;- str_replace_all(featureSoup,&quot; &quot;, &quot;&quot;)
 # 
-#   # Additonal
-# 
-# 
-#   # reviews &lt;-  mainpage %&gt;% html_nodes(&quot;#reviews p&quot;) %&gt;% html_text()
-#   # stars &lt;-  mainpage %&gt;% html_nodes(&quot;#reviews .rating&quot;)  %&gt;% html_attr(&quot;title&quot;)
-#   # date &lt;-  mainpage %&gt;% html_nodes(&quot;.subtext&quot;)  %&gt;% html_text()
+
 #   
 #   return(c(distance, elevation,routeType,ratingCount,featureSoup))
 # }
@@ -209,16 +205,16 @@ library(RSelenium)</code></pre>
 
 
 ## write.csv(trailsDf,file = &quot;trailsDf&quot;,row.names = FALSE)</code></pre>
+<p>** Create a term document matrix based on each feature**</p>
 <pre class="r"><code>library(tm)</code></pre>
 <pre><code>## Loading required package: NLP</code></pre>
 <pre class="r"><code>trailsDf &lt;- read.csv(&quot;trailsDf&quot;,stringsAsFactors = FALSE)
 keywords &lt;- as.data.frame(trailsDf$keyword,stringsAsFactors = FALSE)
-
 myTm &lt;- (t(as.matrix(TermDocumentMatrix(Corpus(VectorSource(keywords$`trailsDf$keyword`))))))</code></pre>
 <pre class="r"><code>index &lt;- seq(1,nrow(trailsDf))
 names(index) &lt;- trailsDf$trailName
 
-
+# Using the cosine similarity function to evaluate similarity between trails
 cos.sim=function(ma, mb){
      mat=tcrossprod(ma, mb)
      t1=sqrt(apply(ma, 1, crossprod))
@@ -229,36 +225,56 @@ cos.sim=function(ma, mb){
 
 cosine_sim &lt;- cos.sim(myTm,myTm)
 
+
+## Get top 10 trail recommendations and their similarity scores
  get_recommendations &lt;- function(title){
    idx &lt;- index[title]
    
    sim_scores &lt;- cosine_sim[idx[1],]
+   sim_scores &lt;- sim_scores[-idx]
    sim_scores &lt;- sort(sim_scores, decreasing = TRUE)
    
-   sim_scores &lt;- sim_scores[2:11]
-   print(sim_scores)
-   
+   sim_scores &lt;- sim_scores[1:10]
+
    trail_index &lt;- as.numeric(names(sim_scores))
    
-   return(trailsDf$trailName[trail_index])
+   return(data.frame(trailNames = trailsDf$trailName[trail_index],sim_scores = as.numeric(sim_scores)))
    
  }
  
-get_recommendations(&quot;Old Pinnacles Trail Loop&quot;)</code></pre>
-<pre><code>##      1016       231        68       169       246       305       324 
-## 0.9146591 0.8997354 0.8902638 0.8902638 0.8902638 0.8902638 0.8902638 
-##       355       405       479 
-## 0.8902638 0.8902638 0.8902638</code></pre>
-<pre><code>##  [1] &quot;Hazard Peak Trail&quot;                           
-##  [2] &quot;Hidden Valley Nature Trail&quot;                  
-##  [3] &quot;Los Liones Canyon and East Topanga Fire Road&quot;
-##  [4] &quot;Baldwin Hills Scenic Overlook Trail&quot;         
-##  [5] &quot;Mount Diablo Grand Loop Trail&quot;               
-##  [6] &quot;Edgewood Trail Loop&quot;                         
-##  [7] &quot;Deer Canyon Loop Trail&quot;                      
-##  [8] &quot;North Ridge and Sunset Trail Loop&quot;           
-##  [9] &quot;Bear Gulch and Alambique Trail Loop&quot;         
-## [10] &quot;Big Baldy Ridge Trail&quot;</code></pre>
+get_recommendations(&quot;Edgewood Trail Loop&quot;)</code></pre>
+<pre><code>##                               trailNames sim_scores
+## 1    Baldwin Hills Scenic Overlook Trail  1.0000000
+## 2      North Ridge and Sunset Trail Loop  1.0000000
+## 3                     San Bruno Mountain  1.0000000
+## 4      Cholla Cactus Garden Nature Trail  1.0000000
+## 5      Coachella Valley Natural Preserve  1.0000000
+## 6                    Antelope Loop Trail  1.0000000
+## 7                 Point Lobos Loop Trail  0.9746794
+## 8  Waterfalls of Mount Diablo Loop Trail  0.9746794
+## 9              Musch Trail to Eagle Rock  0.9746794
+## 10                           Bluff Trail  0.9746794</code></pre>
+<pre class="r"><code>library(shiny)
+library(DT)</code></pre>
+<pre><code>## 
+## Attaching package: 'DT'</code></pre>
+<pre><code>## The following objects are masked from 'package:shiny':
+## 
+##     dataTableOutput, renderDataTable</code></pre>
+<pre class="r"><code>ui &lt;- basicPage(
+  textInput(&quot;caption&quot;,&quot;Trail Name&quot;,value = &quot;&quot;),
+  h2(&quot;Take a Hike(w/ a recommendation system&quot;),
+  DT::dataTableOutput(&quot;mytable&quot;)
+)
+
+server &lt;- function(input, output) {
+  output$mytable = DT::renderDataTable({
+    get_recommendations(input$caption)
+  },options = list(pageLength = 10,paging=FALSE,searching=FALSE))
+}
+  
+shinyApp(ui, server)</code></pre>
+<div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div>
 
 
 

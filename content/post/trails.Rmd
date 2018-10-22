@@ -7,5 +7,208 @@ categories: []
 tags: []
 ---
 
-<iframe src="http://siezethedata.shinyapps.io/newtrails2" width="1000" height="2000"></iframe>
+<div style="width:500px; height=200px"; align="middle">
+![](hike1.jpg)
+</div>
+  
+  
+**As someone who was not familair wtith recommendation systems, I was immediately inspired by the kernel, [Getting Started with a Movie Recommendation System](https://www.kaggle.com/ibtesama/getting-started-with-a-movie-recommendation-system). I wanted to build my own recommendation system, but I wanted to make it my own. As a fan of hiking, I decided to combine two topics I was interested in, and this project was the outcome.**
+
+
+
+  **There are many types of recommender systems out there, but I chose to start with a simple, yet powerful, system called a, "Content Based Filtering" system. The feautres of a hike I chose to base my recommendation system on was: keywords, difficulty and route type. **
+  
+  **First, I needed to get the dataset with the necessary information to build a content based recommendation system, so I decided to use the website [AllTrails](https://wwww.alltrails.com). An awesome website for hiking enthusisasts and provides very useful trail reviews, and descriptions.**
+  
+```{r}
+library(rvest)
+library(dplyr)
+library(tidyr)
+library(stringr) 
+library(RSelenium)
+```
+
+<h2>WEB SCRAPING PORTION</h2>
+
+**We will go to the link that shows all trails in California on AllTrails.com. For our recommednation system to work, we should get as many trails as possible. For this example, we will obtain about 1,000 trails to aid our recommendation system**
+```{r}
+
+# library(data.table)
+# library(readr)
+# 
+# #  Let's limit our dataset to only hiking trails located in california
+# url <- html_session("https://www.alltrails.com/us/california")
+# 
+# rD <- rsDriver(browser = 'firefox')
+# remDr <- rD[["client"]]
+# mainpage <- remDr$navigate(url$url)
+# webElems <- remDr$findElements(using = 'css selector', "#load_more h3")[[2]]
+# 
+# #   Clicking the load more buttton for top trails in California 50 times, which provides us with roughly      a 1000 trails. This is a sufficient amount for our starter recommendation system.
+# for(i in 1:50){
+#   webElem <- remDr$findElement("css", "body")
+#   webElem$sendKeysToElement(list(key = "end"))
+#   webElem <- remDr$findElements(using = 'css selector', "#load_more h3")[[2]]
+#    Sys.sleep(6)
+#   webElem$clickElement()
+#   webElems <- remDr$findElements(using = 'css selector', "#load_more h3")[[2]]
+#   Sys.sleep(4)
+# }
+# 
+# # Now that we have all the trails we want loaded, we will use rvest to extract the links to each trail's homepage, which contains all the trails attributes.
+# 
+# mainpage <- read_html(unlist(remDr$getPageSource()), encoding = "UTF-8")
+# 
+# 
+# trail_links <- mainpage %>% html_nodes(".short a") %>% html_attr('href')
+# # We can get the trail name, average overall rating and difficulty before using the extracted links
+# trailNames <- mainpage %>% html_nodes(".short a") %>% html_text()
+# trailAvgRating <- as.numeric(mainpage %>% html_nodes(".undefined") %>% html_attr("title"))[-1]
+# difficulty <- (mainpage %>% html_nodes(".selected") %>% html_text())[-c(1,2)]
+#  
+#  
+# 
+# # From here, we will use each link to extract the information of each trail. WARNING: takes a while for
+# # this portion to run
+# getTrailDetails <- function(x){
+# 
+#   updateURL <- html_session(paste("https://www.alltrails.com/", x,sep=""))
+# 
+# 
+#   Sys.sleep(2)
+#   distance <- parse_number(updateURL %>% html_node(".distance-icon .detail-data") %>% html_text())
+#   elevation <- parse_number(updateURL %>% html_node(".elevation-icon .detail-data") %>% html_text())
+#   routeType <- (updateURL %>% html_nodes(".detail-data") %>% html_text())[3]
+#   ratingCount <- parse_number(updateURL %>% html_node("#activity-feeds .active a") %>% html_text())
+#   trailKeywords <- (updateURL %>% html_nodes(".big") %>% html_text()) %>% paste(collapse = "|")
+# 
+#    # Give more weight to route type  by adding it 3 times
+#   featureSoup <- paste(paste0(rep(routeType,3),collapse = "|"),trailKeywords,sep="|")
+#   featureSoup <- str_replace_all(featureSoup," ", "")
+#   
+# 
+#   
+#  
+#   return(c(distance, elevation,routeType,ratingCount,featureSoup))
+# }
+#  
+#  
+# trails <- lapply(trail_links,getTrailDetails)
+# 
+# 
+# trailsDf <- data.frame((do.call(rbind,trails)),stringsAsFactors = FALSE)
+# trailsDf <- cbind(trailName = trailNames, trailsDf)
+# colnames(trailsDf)[2:6] <- c( "dist.", "elevation", "routeType", "ratingCount", "keywords")
+# trailsDf$difficulty <- difficulty
+# trailsDf$avgRating <- trailAvgRating
+```
+
+**A person who enjoys easy-going hikes will probably not enjoy an extremely difficult hike, and vice versa, so we should add more weight to the difficulty of a trail. **
+```{r}
+# Give more weight to difficulty by adding it 4 times
+# multi.fun <- function(x) {
+#     return(paste0(rep(x,4), collapse = "|"))
+# }
+# trailsDf$difficulty <- unlist(lapply(trailsDf$difficulty, multi.fun))
+# trailsDf$keywords <- paste(trailsDf$difficulty, trailsDf$keywords, sep="|")
+# trailsDf[,c(2,3,5,8)] <- sapply(trailsDf[,c(2,3,5,8)], as.numeric)
+
+
+#write.csv(trailsDf,file = "newTrailsDf.csv",row.names = FALSE)
+```  
+
+<h2> Read in the webscraped data </h2>
+```{r}
+trailsDf <- read.csv("newTrailsDf.csv",stringsAsFactors = FALSE)
+```
+
+
+**For the purpose of creating a good recommendation system, we should only care about trails that have good reviews. We wouldn't want to recommend a trail with 1 star rating just because it has similar tags to a 5 star trail. So, let's remove all the poorly rated trails from our dataset. For this example, we will cut anything below 3.5 stars.**
+```{r}
+which(trailsDf$avgRating < 3.5)
+```  
+**Good for us, we only have 2 observations below 3.5. This should make sense because we webscraped the top 1,152 trails in California. The further we would have gone down on the list, the more likely lower star trails would appear. **
+```{r}
+trailsDf <- trailsDf[-which(trailsDf$avgRating < 3.5),]
+```
+
+
+
+
+
+
+  
+**Now, we'll create a term document matrix based on each feature/keyword:**
+```{r}
+library(tm)
+keywords <- as.data.frame(trailsDf$keyword,stringsAsFactors = FALSE)
+myTm <- (t(as.matrix(TermDocumentMatrix(Corpus(VectorSource(keywords$`trailsDf$keyword`))))))
+```    
+
+
+
+**Here we create a cosine similarity function that compares the simlarity of two trails based on their attributes. The function looks at every row of the term document matrix to calculate the similarity. The function outputs a "similarity score" which represents the cosine of angle between. The interval is 0, representing no similarities, or 1, meaning they are exactly alike.**
+```{r}
+
+index <- seq(1,nrow(trailsDf))
+names(index) <- tolower(trailsDf$trailName)
+
+# Using the cosine similarity function to evaluate similarity between trails
+cos.sim=function(ma, mb){
+     mat=tcrossprod(ma, mb)
+     t1=sqrt(apply(ma, 1, crossprod))
+     t2=sqrt(apply(mb, 1, crossprod))
+     mat / outer(t1,t2)
+ }
+
+
+cosine_sim <- cos.sim(myTm,myTm)
+
+```
+
+**Below is where we create a function to get the top 10 trail recommendations based on the simialrity of a trail the user wishes to comapre. For our example, we use the Old Pinnacles Trail Loop. Note: the name has to be exactly how it appears on alltrails.com, except for the captialization**
+
+```{r}
+## Get top 10 trail recommendations and their similarity scores
+ get_recommendations <- function(title){
+   idx <- index[title]
+   
+   sim_scores <- cosine_sim[idx[1],]
+   sim_scores <- sim_scores[-idx]
+   sim_scores <- sort(sim_scores, decreasing = TRUE)
+   
+   sim_scores <- sim_scores[1:10]
+
+   trail_index <- as.numeric(names(sim_scores))
+   
+   return(data.frame(trailNames = trailsDf$trailName[trail_index],sim_scores = as.numeric(sim_scores)))
+   
+ }
+ 
+get_recommendations("old pinnacles trail loop")
+```  
+
+
+ 
+**To make the recommendation a little bit more interactive, below is a shiny app that can take user input and display the recommendations and the corresponding similarity score.**
+
+```{r}
+# library(shiny)
+# library(DT)
+# ui <- basicPage(
+#   textInput("caption","Trail Name",value = ""),
+#   h2("Take a Hike(w/ a recommendation system"),
+#   DT::dataTableOutput("mytable")
+# )
+# 
+# server <- function(input, output) {
+#   output$mytable = DT::renderDataTable({
+#     get_recommendations(input$caption)
+#   },options = list(pageLength = 10,paging=FALSE,searching=FALSE))
+# }
+#   
+# shinyApp(ui, server)
+```
+
+
 

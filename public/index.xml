@@ -17,7 +17,8 @@
       <pubDate>Tue, 09 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>/2018/10/09/trails/</guid>
-      <description> </description>
+      <description>As someone who was not familair wtith recommendation systems, I was immediately inspired by the kernel, Getting Started with a Movie Recommendation System. I wanted to build my own recommendation system, but I wanted to make it my own. As a fan of hiking, I decided to combine two topics I was interested in, and this project was the outcome.
+There are many types of recommender systems out there, but I chose to start with a simple, yet powerful, system called a, “Content Based Filtering” system.</description>
     </item>
     
     <item>
